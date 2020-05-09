@@ -1,8 +1,12 @@
 <?php
 
 use Symfony\Component\Dotenv\Dotenv;
+use GraphAware\Neo4j\OGM\EntityManager;
 
 require dirname(__DIR__).'/vendor/autoload.php';
+
+$entityManagerSQL = EntityManager::create('http://localhost:7474');
+// $entityManagerNEO = EntityManager::create('http://localhost:7474'); attempt to create 2 entity managers
 
 if (!class_exists(Dotenv::class)) {
     throw new LogicException('Please run "composer require symfony/dotenv" to load the ".env" files configuring the application.');

@@ -1,4 +1,25 @@
 neo4j:
+    profiling:
+        enabled: true
     connections:
         default:
-            dsn: '%env(resolve:NEO4J_DEFAULT_CONNECTION_DSN)%'
+            scheme: bolt # default (must be either "http" or "bolt")
+            host: localhost # default
+            port: 7687 # optional, will be set to the proper driver's default port if not provided
+            username: neo4j # default
+            password: bar # default
+        second_connection:
+            username: neo4j
+            password: bar
+        third_connection:
+            dsn: 'bolt://neo4j:bar@localhost:7687'
+    clients:
+        default:
+            connections: [default, second_connection, third_connection]
+        other_client:
+            connections: [second_connection]
+        foobar: ~ # foobar client will have the "default" connection
+    entity_managers:
+        default:
+            client: default # defaults to "default"
+            cache_dir: "%kernel.cache_dir%/neo4j" # defaults to system cache
