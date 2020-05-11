@@ -86,7 +86,8 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+
+       return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
 
     /**
@@ -98,10 +99,12 @@ class LoginAuthenticator extends AbstractFormLoginAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
 
+        // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
         return new RedirectResponse($this->urlGenerator->generate('homepage'));
     }
 
