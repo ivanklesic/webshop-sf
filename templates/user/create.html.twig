@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if app.user %}
+        Edit {{ user.username }}
+    {% else %}
+        Add a new User
+    {% endif %}
+{% endblock %}
+{% block body %}
+
+    <div class="container">
+        {{ form_start(form) }}
+
+            {{ form_label(form.username) }}
+            {{ form_errors(form.username) }}
+            {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+
+            {{ form_label(form.password.first) }}
+            {{ form_errors(form.password.first) }}
+            {{ form_widget(form.password.first, {'attr': {'class': 'form-control'}}) }}
+
+            {{ form_label(form.password.second) }}
+            {{ form_errors(form.password.second) }}
+            {{ form_widget(form.password.second, {'attr': {'class': 'form-control'}}) }}
+
+            {{ form_label(form.roles) }}
+            {{ form_errors(form.roles) }}
+            {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
+
+            {{ form_label(form.firstname) }}
+            {{ form_errors(form.firstname) }}
+            {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+
+            {{ form_label(form.lastname) }}
+            {{ form_errors(form.lastname) }}
+            {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
+
+            {{ form_label(form.diet) }}
+            {{ form_errors(form.diet) }}
+            {{ form_widget(form.diet, {'attr': {'class': 'form-control'}}) }}
+
+            {{ form_label(form.conditions) }}
+            {{ form_errors(form.conditions) }}
+            {{ form_widget(form.conditions, {'attr': {'class': 'form-control'}}) }}
+
+        <br>
+        <span>
+            {{ form_label(form.save) }}
+            {{ form_widget(form.save, {'attr': {'class': 'btn btn-success'}}) }}
+            {{ form_end(form) }}
+                <a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">Back</a>
+        </span>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        $(document).ready(function () {
+            let roles = $("#user_roles").select2();
+
+            let labels = document.getElementsByTagName('LABEL');
+            for (let i = 0; i < labels.length; i++) {
+                if (labels[i].htmlFor !== '') {
+                    let elem = document.getElementById(labels[i].htmlFor);
+                    if (elem)
+                        elem.label = labels[i];
+                }
+            }
+
+            if($('#user_roles').val() === 'ROLE_SELLER'){
+                $("#user_diet").val('').trigger('change');
+                uncheckAll();
+                toggle('user_diet');
+                toggle('user_conditions');
+                document.getElementById('user_diet').label.innerHTML = "";
+                labels[7].innerHTML = "";
+
+            }
+
+
+            $('#user_roles').on('select2:select', function(e) {
+                    $("#user_diet").val('').trigger('change');
+                    uncheckAll();
+                    toggle('user_diet');
+                    toggle('user_conditions');
+                    if($(this).val() === 'ROLE_SELLER'){
+                        document.getElementById('user_diet').label.innerHTML = "";
+                        labels[7].innerHTML = "";
+                    }else{
+                        document.getElementById('user_diet').label.innerHTML = "If you want to get recommendations based on your diet, select one of the following options";
+                        labels[7].innerHTML = "Select medical conditions which affect you. This will be used to generate warnings on checkout";
+                    }
+
+
+            });
+
+
+
+            function uncheckAll () {
+                let inputs = document. querySelectorAll("input[type=checkbox]")
+                inputs.forEach(item => {
+                    item.checked = false
+                })
+            }
+
+            function toggle(elName) {
+                var x = document.getElementById(elName);
+                if (x.style.display === "none") {
+                    x.style.display = "block";
+                } else {
+                    x.style.display = "none";
+                }
+            }
+
+        });
+
+
+
+
+    </script>
+{% endblock %}

@@ -4,12 +4,15 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity("username")
  */
 class User implements UserInterface
 {
@@ -22,6 +25,14 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Length(
+     *      min = 4,
+     *      max = 50,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     * )
+     * @Assert\NotBlank()
+     *
      */
     private $username;
 
@@ -33,24 +44,41 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * * @Assert\Length(
+     *      min = 4,
+     *      max = 50,
+     *      minMessage = "Your password must be at least {{ limit }} characters long",
+     *      maxMessage = "Your password cannot be longer than {{ limit }} characters"
+     * )
+     *
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-Z]*$/",
+     *     message="Name can only contain letters"
+     * )
+     * @Assert\NotBlank()
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex(
+     *     pattern="/^[a-zA-Z]*$/",
+     *     message="Name can only contain letters"
+     * )
+     * @Assert\NotBlank()
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
      */
     private $diet;
-
 
     /**
      * @ORM\OneToMany(targetEntity=UserProductView::class, mappedBy="user", orphanRemoval=true)
@@ -73,7 +101,7 @@ class User implements UserInterface
     private $productsOnSale;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Condition::class, mappedBy="users")
+     * @ORM\ManyToMany(targetEntity=Condition::class, inversedBy="users")
      */
     private $conditions;
 
@@ -137,7 +165,7 @@ class User implements UserInterface
         return (string) $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
 
@@ -178,19 +206,6 @@ class User implements UserInterface
         $this->diet = $diet;
 
         return $this;
-    }
-
-    public function getConditions()
-    {
-        return $this->conditions;
-    }
-
-    public function addCondition(string $condition){
-        $this->conditions->add($condition);
-    }
-
-    public function removeCondition(string $condition){
-        $this->conditions->removeElement($condition);
     }
 
     /**
@@ -333,4 +348,34 @@ class User implements UserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
+    /**
+     * @return Collection|Condition[]
+     */
+    public function getConditions(): Collection
+    {
+        return $this->conditions;
+    }
+
+    public function addCondition(Condition $condition): self
+    {
+        if (!$this->conditions->contains($condition)) {
+            $this->conditions[] = $condition;
+            $condition->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCondition(Condition $condition): self
+    {
+        if ($this->conditions->contains($condition)) {
+            $this->conditions->removeElement($condition);
+            $condition->removeUser($this);
+        }
+
+        return $this;
+    }
+
+
 }

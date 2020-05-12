@@ -33,7 +33,7 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
-        dd(1);
 
     }
+
 }

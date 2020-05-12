@@ -2,16 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ConditionRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ConditionRepository::class)
- * @ORM\Table(name="`condition`")
+ * @ORM\Entity(repositoryClass=CategoryRepository::class)
  */
-class Condition
+class Category
 {
     /**
      * @ORM\Id()
@@ -31,18 +30,12 @@ class Condition
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="conditions")
-     */
-    private $users;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="conditions")
+     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="Category")
      */
     private $products;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
@@ -76,32 +69,6 @@ class Condition
     }
 
     /**
-     * @return Collection|User[]
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        if ($this->users->contains($user)) {
-            $this->users->removeElement($user);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|Product[]
      */
     public function getProducts(): Collection
@@ -113,7 +80,7 @@ class Condition
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
-            $product->addCondition($this);
+            $product->setCategory($this);
         }
 
         return $this;
@@ -123,13 +90,12 @@ class Condition
     {
         if ($this->products->contains($product)) {
             $this->products->removeElement($product);
-            $product->removeCondition($this);
+            // set the owning side to null (unless already changed)
+            if ($product->getCategory() === $this) {
+                $product->setCategory(null);
+            }
         }
 
         return $this;
-    }
-
-    public function __toString() {
-        return $this->name;
     }
 }

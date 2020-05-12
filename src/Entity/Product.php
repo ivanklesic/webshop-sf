@@ -25,11 +25,6 @@ class Product
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $category;
-
-    /**
      * @ORM\Column(type="text")
      */
     private $description;
@@ -38,12 +33,6 @@ class Product
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $image;
-
-    /**
-     * @var ArrayCollection
-     * @ORM\Column(type="array", nullable=false)
-     */
-    private $conditions;
 
     /**
      * @ORM\Column(type="integer")
@@ -71,6 +60,32 @@ class Product
      */
     private $seller;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $Category;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Condition::class, inversedBy="products")
+     */
+    private $conditions;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $proteinPercent;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $carbohydratePercent;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $lipidPercent;
+
 
 
     public function __construct()
@@ -78,6 +93,7 @@ class Product
         $this->viewedBy = new ArrayCollection();
         $this->boughtBy = new ArrayCollection();
         $this->ratedBy = new ArrayCollection();
+        $this->conditions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -93,18 +109,6 @@ class Product
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCategory(): ?string
-    {
-        return $this->category;
-    }
-
-    public function setCategory(string $category): self
-    {
-        $this->category = $category;
 
         return $this;
     }
@@ -133,18 +137,6 @@ class Product
         return $this;
     }
 
-    public function getConditions()
-    {
-        return $this->conditions;
-    }
-
-    public function addCondition(string $condition){
-        $this->conditions->add($condition);
-    }
-
-    public function removeCondition(string $condition){
-        $this->conditions->removeElement($condition);
-    }
 
     public function getQuantity(): ?int
     {
@@ -259,6 +251,80 @@ class Product
     public function setSeller(?User $seller): self
     {
         $this->seller = $seller;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->Category;
+    }
+
+    public function setCategory(?Category $Category): self
+    {
+        $this->Category = $Category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Condition[]
+     */
+    public function getConditions(): Collection
+    {
+        return $this->conditions;
+    }
+
+    public function addCondition(Condition $condition): self
+    {
+        if (!$this->conditions->contains($condition)) {
+            $this->conditions[] = $condition;
+        }
+
+        return $this;
+    }
+
+    public function removeCondition(Condition $condition): self
+    {
+        if ($this->conditions->contains($condition)) {
+            $this->conditions->removeElement($condition);
+        }
+
+        return $this;
+    }
+
+    public function getProteinPercent(): ?int
+    {
+        return $this->proteinPercent;
+    }
+
+    public function setProteinPercent(int $proteinPercent): self
+    {
+        $this->proteinPercent = $proteinPercent;
+
+        return $this;
+    }
+
+    public function getCarbohydratePercent(): ?int
+    {
+        return $this->carbohydratePercent;
+    }
+
+    public function setCarbohydratePercent(int $carbohydratePercent): self
+    {
+        $this->carbohydratePercent = $carbohydratePercent;
+
+        return $this;
+    }
+
+    public function getLipidPercent(): ?int
+    {
+        return $this->lipidPercent;
+    }
+
+    public function setLipidPercent(int $lipidPercent): self
+    {
+        $this->lipidPercent = $lipidPercent;
 
         return $this;
     }
