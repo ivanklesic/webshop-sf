@@ -26,7 +26,7 @@ class Condition
     private $name;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", nullable=false)
      */
     private $description;
 

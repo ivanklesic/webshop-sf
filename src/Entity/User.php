@@ -57,8 +57,8 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex(
-     *     pattern="/^[a-zA-Z]*$/",
-     *     message="Name can only contain letters"
+     *     pattern="/^([a-zA-Z]+\s)*[a-zA-Z]+$/",
+     *     message="Name must start with a letter and can only contain letters and spaces"
      * )
      * @Assert\NotBlank()
      */
@@ -67,8 +67,8 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex(
-     *     pattern="/^[a-zA-Z]*$/",
-     *     message="Name can only contain letters"
+     *     pattern="/^([a-zA-Z]+\s)*[a-zA-Z]+$/",
+     *     message="Name must start with a letter and can only contain letters and spaces"
      * )
      * @Assert\NotBlank()
      */

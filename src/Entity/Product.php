@@ -6,9 +6,12 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Validator\Constraints as CustomAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @CustomAssert\RatioConstraint()
  */
 class Product
 {
@@ -21,11 +24,19 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      max = 50,
+     *      maxMessage = "Product name cannot be longer than {{ limit }} characters"
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(
+     *      max = 500,
+     *      maxMessage = "Product description cannot be longer than {{ limit }} characters"
+     * )
      */
     private $description;
 
@@ -36,8 +47,25 @@ class Product
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 9999,
+     *      minMessage = "Quantity cannot be less than {{ limit }}",
+     *      maxMessage = "Quantity cannot be bigger than {{ limit }}"
+     * )
      */
     private $quantity;
+
+    /**
+     * @ORM\Column(type="float")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 9999,
+     *      minMessage = "Price cannot be less than {{ limit }}",
+     *      maxMessage = "Price cannot be bigger than {{ limit }}"
+     * )
+     */
+    private $price;
 
     /**
      * @ORM\OneToMany(targetEntity=UserProductView::class, mappedBy="product", orphanRemoval=true)
@@ -71,22 +99,39 @@ class Product
      */
     private $conditions;
 
+
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 100,
+     *      minMessage = "Percent cannot be less than {{ limit }}",
+     *      maxMessage = "Percent cannot be bigger than {{ limit }}"
+     * )
      */
     private $proteinPercent;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 100,
+     *      minMessage = "Percent cannot be less than {{ limit }}",
+     *      maxMessage = "Percent cannot be bigger than {{ limit }}"
+     * )
      */
     private $carbohydratePercent;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 100,
+     *      minMessage = "Percent cannot be less than {{ limit }}",
+     *      maxMessage = "Percent cannot be bigger than {{ limit }}"
+     * )
      */
     private $lipidPercent;
-
-
 
     public function __construct()
     {
@@ -289,6 +334,18 @@ class Product
         if ($this->conditions->contains($condition)) {
             $this->conditions->removeElement($condition);
         }
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }

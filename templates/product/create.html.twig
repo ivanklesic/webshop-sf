@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if product %}
+        Edit {{ product.name }}
+    {% else %}
+        Add a new Product
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        {{ form_start(form, {'attr': {'class': 'my-form-class'} }) }}
+
+            {{ form_label(form.name) }}
+            {{ form_errors(form.name) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control mg-bot-15' }}) }}
+
+            {{ form_label(form.description) }}
+            {{ form_errors(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+
+            {{ form_label(form.quantity) }}
+            {{ form_errors(form.quantity) }}
+            {{ form_widget(form.quantity, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+
+            {{ form_label(form.price) }}
+            {{ form_errors(form.price) }}
+            {{ form_widget(form.price, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+
+            {{ form_label(form.category) }}
+            {{ form_errors(form.category) }}
+            {{ form_widget(form.category, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+
+            {{ form_label(form.image) }}
+            {{ form_errors(form.image) }}
+            {{ form_widget(form.image, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+        <br>
+            {{ form_label(form.proteinPercent) }}
+            {{ form_errors(form.proteinPercent) }}
+            {{ form_widget(form.proteinPercent, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+        <br>
+            {{ form_label(form.carbohydratePercent) }}
+            {{ form_errors(form.carbohydratePercent) }}
+            {{ form_widget(form.carbohydratePercent, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+        <br>
+            {{ form_label(form.lipidPercent) }}
+            {{ form_errors(form.lipidPercent) }}
+            {{ form_widget(form.lipidPercent, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+        <br>
+            {{ form_label(form.conditions) }}
+            {{ form_errors(form.conditions) }}
+            {{ form_widget(form.conditions, {'attr': {'class': 'form-control mg-bot-15'}}) }}
+        <br>
+
+            {{ form_label(form.submit) }}
+        <span>
+            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success'} } ) }}
+
+        {{ form_end(form) }}
+
+            <a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">Back</a>
+         </span>
+    </div>
+{% endblock %}
+{% block javascripts %}
+
+    <script>
+
+        $(document).ready(function () {
+
+        });
+
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+

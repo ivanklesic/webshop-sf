@@ -23,7 +23,7 @@ class UserController extends AbstractController
     public function listAction(EntityManagerInterface $entityManager)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $users = $entityManager->getRepository('AppBundle:User')->findAll();
+        $users = $entityManager->getRepository('App\Entity\User')->findCustomersAndSellers();
         $currentUser = $this->getUser();
 
         return $this->render('user/list.html.twig', [
@@ -63,7 +63,7 @@ class UserController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash(
-                'user_create',
+                'success',
                 'User created successfully!'
             );
             return $this->redirectToRoute('app_login');
@@ -81,7 +81,7 @@ class UserController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      * @param User $user
      * @return Response
-     * @Route ("/edit/{id}", name="user_edit")
+     * @Route ("/user/edit/{id}", name="user_edit")
      */
 
     public function editAction(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder, User $user)
@@ -127,7 +127,7 @@ class UserController extends AbstractController
         }
 
         $this->addFlash(
-            'user_edit',
+            'warning',
             'You can only edit your own profile!'
         );
 
@@ -139,7 +139,7 @@ class UserController extends AbstractController
     /**
      * @param EntityManagerInterface $entityManager
      * @param User $user
-     * @Route ("/delete/{id}", name="delete")
+     * @Route ("/user/delete/{id}", name="user_delete")
      * @return Response
      * @throws Exception
      */

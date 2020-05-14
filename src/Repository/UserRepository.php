@@ -64,4 +64,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
     */
+
+    public function findCustomersAndSellers(){
+        return $this->createQueryBuilder('u')
+            ->where('u.role = "ROLE_SELLER"')
+            ->orWhere('u.role = "ROLE_CUSTOMER"')
+            ->orderBy('u.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
