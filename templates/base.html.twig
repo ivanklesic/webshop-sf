@@ -32,11 +32,12 @@
     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
-                    <li class="nav-item {% if 'product' in app.request.attributes.get('_route') %}active{% endif %}">
-                        <a class="nav-link" href="">Products</a>
+                    <li class="nav-item {% if 'product/list' in app.request.attributes.get('_route') %}active{% endif %}">
+                        <a class="nav-link" href="{{ path('product_list') }}">Products</a>
                     </li>
-                    <li class="nav-item {% if 'user' in app.request.attributes.get('_route') %}active{% endif %}">
-                        <a class="nav-link" href="">Users</a>
+
+                    <li class="nav-item {% if 'user/list' in app.request.attributes.get('_route') %}active{% endif %}">
+                        <a class="nav-link" href="{{ path('user_list') }}">Users</a>
                     </li>
 
                     {% if is_granted('ROLE_SELLER') %}
@@ -69,12 +70,12 @@
     {% endif %}
 </nav>
 
-{% for message in app.flashes('user_create') %}
-    <div class="container">
-        <div class="flash-notice">
+{% for label, messages in app.flashes(['success', 'warning']) %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
             {{ message }}
         </div>
-    </div>
+    {% endfor %}
 {% endfor %}
 {% block body %}
 {% endblock %}

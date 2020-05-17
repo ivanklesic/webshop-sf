@@ -2,7 +2,45 @@
 
 {% block body %}
 
-    {% if app.user %}
+    {% if 'ROLE_CUSTOMER' in app.user.roles %}
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-lg-2">
+
+                    <br>
+                    <div class="list-group">
+                        {% for category in categories %}
+                        <a href="{{ path('category', {id:category.id}) }}" class="list-group-item">{{ category.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+                <div class="col-lg-10">
+                    <div class="row"><br>
+                        {% for product in products %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100">
+                                <a href="#"><img class="card-img-top" src="{{ asset('/uploads/images/' ~ product.image) }}" alt=""></a>
+                                <div class="card-body">
+                                    <h4 class="card-title">
+                                        <a href="#">{{ product.name }}</a>
+                                    </h4>
+                                    <h5>€{{ product.price }}</h5>Stock: {{ product.quantity }}
+                                    <p class="card-text">{{ product.description|length > 50 ? product.description|slice(0, 50) ~ '...' : product.description  }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <small class="text-muted"></small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
 
     {% endif %}
 

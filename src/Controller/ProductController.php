@@ -24,7 +24,7 @@ class ProductController extends AbstractController
     /**
      * @param EntityManagerInterface $entityManager
      * @return Response
-     * @Route("/list", name="list")
+     * @Route("/product/list", name="product_list")
      */
     public function listAction(EntityManagerInterface $entityManager)
     {
@@ -47,9 +47,10 @@ class ProductController extends AbstractController
      */
     public function createAction(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader)
     {
-        $this->denyAccessUnlessGranted('ROLE_SELLER');
 
         $product = new Product();
+
+        $this->denyAccessUnlessGranted('create', $product);
 
         $form = $this->createForm('App\Form\ProductType', $product, [
             'entityManager' => $entityManager,
@@ -71,20 +72,26 @@ class ProductController extends AbstractController
             $currentUser = $this->getUser();
 
             $product->setSeller($currentUser);
+            $product->setCreatedAt(new \DateTime());
 
             $entityManager->persist($product);
             $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'Product created successfully!'
+            );
 
 
             return $this->redirectToRoute('homepage');
         }
 
 
-
         return $this->render(
             'product/create.html.twig', [
             'form' => $form->createView(),
             'product' => $product,
+            'edit' => false
 
         ]);
     }
@@ -94,11 +101,12 @@ class ProductController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Product $product
      * @return Response
-     * @Route ("/edit/{id}", name="edit")
+     * @Route ("/product/edit/{id}", name="edit")
      * @throws \Exception
      */
     public function editAction(Request $request, EntityManagerInterface $entityManager, Product $product)
     {
+        $this->denyAccessUnlessGranted('edit', $product);
 
         $form = $this->createForm('AppBundle\Form\ProductType', $product, [
             'entityManager' => $entityManager,
@@ -110,6 +118,7 @@ class ProductController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $product->setCreatedAt(new \DateTime());
             $entityManager->persist($product);
             $entityManager->flush();
             return $this->redirectToRoute('product_details', ['id' => $product->getId()]);
@@ -120,6 +129,7 @@ class ProductController extends AbstractController
             'product/create.html.twig', [
             'form' => $form->createView(),
             'product' => $product,
+            'edit' => true
 
         ]);
     }
@@ -141,17 +151,16 @@ class ProductController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Product $product
      * @return Response
-     * @Route ("/delete/{id}", name="delete")
+     * @Route ("/product/delete/{id}", name="product_delete")
      * @throws \Exception
      */
     public function deleteAction(EntityManagerInterface $entityManager, Product $product)
     {
-
-
+        $this->denyAccessUnlessGranted('delete', $product);
 
         $entityManager->remove($product);
-
         $entityManager->flush();
+
         return $this->redirectToRoute('product_list');
     }
 }

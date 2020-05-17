@@ -1,11 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {% if app.user %}
-        Edit {{ user.username }}
-    {% else %}
         Add a new User
-    {% endif %}
 {% endblock %}
 {% block body %}
 
@@ -24,10 +20,6 @@
             {{ form_errors(form.password.second) }}
             {{ form_widget(form.password.second, {'attr': {'class': 'form-control'}}) }}
 
-            {{ form_label(form.roles) }}
-            {{ form_errors(form.roles) }}
-            {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
-
             {{ form_label(form.firstname) }}
             {{ form_errors(form.firstname) }}
             {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
@@ -36,6 +28,12 @@
             {{ form_errors(form.lastname) }}
             {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
 
+        {% if not edit %}
+
+            {{ form_label(form.roles) }}
+            {{ form_errors(form.roles) }}
+            {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
+
             {{ form_label(form.diet) }}
             {{ form_errors(form.diet) }}
             {{ form_widget(form.diet, {'attr': {'class': 'form-control'}}) }}
@@ -43,6 +41,17 @@
             {{ form_label(form.conditions) }}
             {{ form_errors(form.conditions) }}
             {{ form_widget(form.conditions, {'attr': {'class': 'form-control'}}) }}
+        {% else %}
+            {% if 'ROLE_CUSTOMER' in user.roles %}
+                {{ form_label(form.diet) }}
+                {{ form_errors(form.diet) }}
+                {{ form_widget(form.diet, {'attr': {'class': 'form-control'}}) }}
+
+                {{ form_label(form.conditions) }}
+                {{ form_errors(form.conditions) }}
+                {{ form_widget(form.conditions, {'attr': {'class': 'form-control'}}) }}
+                {% endif %}
+        {% endif %}
 
         <br>
         <span>

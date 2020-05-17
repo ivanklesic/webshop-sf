@@ -27,6 +27,8 @@ class UserType  extends AbstractType
     {
 
         $requiredPassword = $options['requiredPassword'];
+        /** @var User $user */
+        $user = $options['user'];
 
         $roles = array();
         $roles['Customer'] = 'ROLE_CUSTOMER';
@@ -40,8 +42,6 @@ class UserType  extends AbstractType
         $diets['Ornish'] = 'ornish';
         $diets['Mediterranean'] = 'mediterranean';
         $diets['Gluten free'] = 'glutenfree';
-
-
 
         $builder
             ->add('username', TextType::class , array(
@@ -62,41 +62,67 @@ class UserType  extends AbstractType
             ->add('lastname', TextType::class , array(
                 'required' => true,
                 'trim' => true,
-                'label' => 'Last name'))
-            ->add('roles', ChoiceType::class, array(
+                'label' => 'Last name'));
+
+        if($requiredPassword){
+            $builder
+                ->add('roles', ChoiceType::class, array(
                 'choices'  => $roles,
                 'label' => 'Role',
                 'multiple' => false))
-            ->add('diet', ChoiceType::class, array(
-                'choices'  => $diets,
-                'label' => 'If you want to get recommendations based on your diet, select one of the following options.',
-                'multiple' => false,
-                'required' => false
-            ))
-            ->add('conditions', EntityType::class, array(
-                'class' => Condition::class,
-                'multiple' => true,
-                'required' => false,
-                'label' => 'Select medical conditions which affect you. This will be used to generate warnings on checkout',
-                'expanded' => true
-            ))
+                ->add('diet', ChoiceType::class, array(
+                    'choices'  => $diets,
+                    'label' => 'If you want to get recommendations based on your diet, select one of the following options.',
+                    'multiple' => false,
+                    'required' => false
+                ))
+                ->add('conditions', EntityType::class, array(
+                    'class' => Condition::class,
+                    'multiple' => true,
+                    'required' => false,
+                    'label' => 'Select medical conditions which affect you. This will be used to generate warnings on checkout',
+                    'expanded' => true
+                ));
+
+        }else{
+            if(in_array('ROLE_CUSTOMER', $user->getRoles())){
+                $builder
+                ->add('diet', ChoiceType::class, array(
+                    'choices'  => $diets,
+                    'label' => 'If you want to get recommendations based on your diet, select one of the following options.',
+                    'multiple' => false,
+                    'required' => false
+                ))
+                    ->add('conditions', EntityType::class, array(
+                        'class' => Condition::class,
+                        'multiple' => true,
+                        'required' => false,
+                        'label' => 'Select medical conditions which affect you. This will be used to generate warnings on checkout',
+                        'expanded' => true
+                    ));
+            }
+        }
+
+        $builder
             ->add('save', SubmitType::class, array(
                 'attr' => array('class' => 'save'),
                 'label' => 'Submit'))
-
         ;
 
-        $builder->get('roles')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($rolesArray) {
-                    // transform the array to a string
-                    return count($rolesArray)? $rolesArray[0]: null;
-                },
-                function ($rolesString) {
-                    // transform the string back to an array
-                    return [$rolesString];
-                }
-            ));
+        if($requiredPassword){
+            $builder->get('roles')
+                ->addModelTransformer(new CallbackTransformer(
+                    function ($rolesArray) {
+                        // transform the array to a string
+                        return count($rolesArray)? $rolesArray[0]: null;
+                    },
+                    function ($rolesString) {
+                        // transform the string back to an array
+                        return [$rolesString];
+                    }
+                ));
+        }
+
 
     }
 

@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class RatioConstraint extends Constraint
 {
-    public $message = 'The macronutrient ratio elements must add up to 100% and contain all positive values.';
+    public $message = 'The macronutrient ratio elements must add up to 100% and contain positive values.';
 
     public function getTargets()
     {

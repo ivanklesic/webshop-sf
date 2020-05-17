@@ -47,4 +47,17 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getProductsOfCategory($category){
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('p')
+            ->from($this->_entityName, 'p')
+            ->join('p.Category', 'c')
+            ->where('c.name = :category')
+            ->setParameter('category', $category);
+        return $qb->getQuery()->getResult();
+    }
+
+
+
 }

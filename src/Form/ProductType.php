@@ -65,17 +65,17 @@ class ProductType extends AbstractType
                     ])
                 ],
             ])
-            ->add('proteinPercent', PercentType::class, [
+            ->add('proteinPercent', IntegerType::class, [
 
-                'label' => 'Protein'
+                'label' => 'Protein percent in macronutrient ratio'
             ])
-            ->add('carbohydratePercent', PercentType::class, [
+            ->add('carbohydratePercent', IntegerType::class, [
 
-                'label' => 'Carbohydrate'
+                'label' => 'Carbohydrate percent in macronutrient ratio'
             ])
-            ->add('lipidPercent', PercentType::class, [
+            ->add('lipidPercent', IntegerType::class, [
 
-                'label' => 'Lipid'
+                'label' => 'Lipid percent in macronutrient ratio'
             ])
             ->add('conditions', EntityType::class, array(
                 'class' => Condition::class,

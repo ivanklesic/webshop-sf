@@ -133,6 +133,23 @@ class Product
      */
     private $lipidPercent;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 60,
+     *      minMessage = "Emission cannot be less than {{ limit }}",
+     *      maxMessage = "Emission cannot be bigger than {{ limit }}"
+     * )
+     */
+    private $gasEmission;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+
+    private $createdAt;
+
     public function __construct()
     {
         $this->viewedBy = new ArrayCollection();
@@ -382,6 +399,30 @@ class Product
     public function setLipidPercent(int $lipidPercent): self
     {
         $this->lipidPercent = $lipidPercent;
+
+        return $this;
+    }
+
+    public function getGasEmission(): ?int
+    {
+        return $this->gasEmission;
+    }
+
+    public function setGasEmission(int $gasEmission): self
+    {
+        $this->gasEmission = $gasEmission;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -23,7 +23,7 @@ class UserController extends AbstractController
     public function listAction(EntityManagerInterface $entityManager)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $users = $entityManager->getRepository('App\Entity\User')->findCustomersAndSellers();
+        $users = $entityManager->getRepository('App\Entity\User')->findByRole('ROLE_SELLER', 'ROLE_CUSTOMER');
         $currentUser = $this->getUser();
 
         return $this->render('user/list.html.twig', [
@@ -64,14 +64,15 @@ class UserController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'User created successfully!'
+                'Profile created successfully!'
             );
             return $this->redirectToRoute('app_login');
         }
 
         return $this->render('user/create.html.twig', array(
             'form' => $form->createView(),
-            'user' => $user
+            'user' => $user,
+            'edit' => false
         ));
     }
 
@@ -113,7 +114,7 @@ class UserController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
                 $this->addFlash(
-                    'user_edit',
+                    'success',
                     'Profile edited successfully!'
                 );
 
@@ -122,16 +123,20 @@ class UserController extends AbstractController
 
             return $this->render('user/create.html.twig', array(
                 'form' => $form->createView(),
-                'user' => $user
+                'user' => $user,
+                'edit' => true
             ));
         }
+        else{
 
-        $this->addFlash(
-            'warning',
-            'You can only edit your own profile!'
-        );
+            $this->addFlash(
+                'warning',
+                'You can only edit your own profile!'
+            );
 
-        return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('homepage');
+
+        }
 
 
     }

@@ -19,7 +19,7 @@ class RatioConstraintValidator extends ConstraintValidator
 
 
         if ($product->getCarbohydratePercent() + $product->getProteinPercent() + $product->getLipidPercent() != 100 ) {
-            // the argument must be a string or an object implementing __toString()
+
             $this->context->buildViolation($constraint->message)
                 ->atPath('proteinPercent')
                 ->addViolation();

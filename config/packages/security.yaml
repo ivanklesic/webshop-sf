@@ -45,11 +45,10 @@ security:
         - { path: ^/?$, role: IS_AUTHENTICATED_REMEMBERED }
         - { path: ^/admin, role: ROLE_ADMIN }
         - { path: ^/user, roles: ROLE_USER }
-        - { path: ^/customer, roles: ROLE_USER }
-        - { path: ^/seller, roles: ROLE_USER }
+        - { path: ^/customer, roles: ROLE_CUSTOMER }
+        - { path: ^/seller, roles: ROLE_SELLER }
 
         # - { path: ^/?$, role: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-    role_hierarchy:
-        ROLE_ADMIN: [ROLE_CUSTOMER, ROLE_SELLER, ROLE_USER]
+
