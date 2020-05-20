@@ -2,33 +2,134 @@
 
 {% block title %}{{ product.name }}{% endblock %}
 {% block body %}
-<div class="container">
-    <h1>{{ product.name }}
-    </h1>
+
+    <div class="row">
+        <div class="col-lg-1">
+            <br>
+            <div class="list-group">
+                {% for category in categories %}
+                <a href="{{ path('category', {id:category.id}) }}" class="list-group-item">{{ category.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-8">
 
 
-    <div>
-        Description: {{ product.description }}
+            <div class="slide my-4">
+                <div class="container">
+                  <img class="d-block img-fluid" src="{{ asset('/uploads/images/' ~ product.image) }}" alt="Image not found">
+                </div>
+            </div>
+
+                <h1>{{ product.name }}</h1>
+                <div style="float: right">
+                    <label for="quantity">Quantity (between 1 and {{ product.quantity }}):</label>
+                    <input type="number" id="quantity" step="1" name="quantity" min="1" max="{{ product.quantity }}">
+                    <a  id="addToCart" data-id="{{ product.id }}"
+                        href="#" class="btn btn-primary">Add to shopping cart</a>
+                </div>
+
+                <div>
+                    Description: {{ product.description }}
+                </div>
+                <br>
+                <div>
+                    Price: €{{ product.price }}
+                </div>
+                <br>
+                <div>
+                    Stock: {{ product.quantity }}
+                </div>
+                <br>
+                <div>
+                    Category: <a href="{{ path('category', {id:product.category.id}) }}">{{ product.category.name }}</a>
+                </div>
+                <br>
+                <div>
+                    Avoid if you have the following conditions:
+                    {% for condition in product.conditions %}
+                        {{ condition.name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </div>
+                <br>
+                <div>
+                    Greenhouse gas emission (in kg CO2-equivalent per kg of product): {{ product.gasEmission }}
+                </div>
+                <br>
+                <div>
+                    <a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">Back</a>
+                </div>
+
+        </div>
+        <div class="col-lg-3">
+            <div id="ratioChart" style="width: 100%; height: 50%"></div>
+        </div>
     </div>
-    <div>
-        Price: {{ product.price }}
-    </div>
-    <div>
-        Serial number: {{ product.serialNumber }}
-    </div>
-    <div>
-        Stock: {{ product.stock }}
-    </div>
 
 
 
 
-    <div>
-        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">Back</a>
-</div>
 
 
     {% endblock %}
 
     {% block javascripts %}
+        <script>
+
+            anychart.onDocumentReady(function() {
+
+                // set the data
+                let data = [
+                    {x: "Protein", value: {{ product.proteinPercent }}},
+                    {x: "Carbohydrate", value: {{ product.carbohydratePercent }}},
+                    {x: "Lipid", value: {{ product.lipidPercent }}}
+                ];
+
+                let chart = anychart.pie();
+
+                chart.title("Macronutrient ratio");
+
+                chart.data(data);
+
+                // display the chart in the container
+                chart.container('ratioChart');
+                chart.draw();
+
+            });
+
+            $( document ).ready(function() {
+
+
+                let stock = {{ product.quantity }};
+
+                $('#addToCart').on('click', function () {
+
+                    if( stock < $('#quantity').val() || !($('#quantity').val() )){
+                        alert("Please select a value lesser than or equal to stock");
+                    }
+                    else{
+                        $.ajax({
+                            url: "{{ path('cart_add') }}",
+                            method: 'POST',
+                            data: {
+                                productID: $('#addToCart').attr('data-id'),
+                                quantity: $('#quantity').val()
+                            },
+                            success: function(data){
+                                console.log(data['msg']);
+                            }
+
+                        });
+                    }
+
+                })
+            });
+
+
+
+
+
+        </script>
+
     {% endblock %}

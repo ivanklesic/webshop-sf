@@ -22,16 +22,15 @@ class UserFixtures extends Fixture
     {
 
         $user = new User();
-        $user->setUsername("user1");
-
+        $user->setUsername("admin");
         $user->setPassword($this->passwordEncoder->encodePassword(
                  $user,
-                 'pass1'
+                 'adminpass'
              ));
-        $user->setFirstname("marko");
-        $user->setRoles(array('ROLE_USER'));
-        $user->setLastname("markic");
-        $user->setDiet("aaaaa");
+        $user->setFirstname("admin");
+        $user->setRoles(array('ROLE_USER', 'ROLE_ADMIN'));
+        $user->setLastname("adminovic");
+        $user->setDiet("");
 
         $manager->persist($user);
         $manager->flush();

@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -57,6 +59,18 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('category', $category);
         return $qb->getQuery()->getResult();
     }
+
+    public function getProductsOfSeller(User $seller){
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('p')
+            ->from($this->_entityName, 'p')
+            ->join('p.seller', 's')
+            ->where('s = :seller')
+            ->setParameter('seller', $seller);
+        return $qb->getQuery()->getResult();
+    }
+
+
 
 
 

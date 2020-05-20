@@ -28,6 +28,8 @@ class ProductController extends AbstractController
      */
     public function listAction(EntityManagerInterface $entityManager)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $products = $entityManager->getRepository('AppBundle:Product')->findAll();
 
         return $this->render(
@@ -101,7 +103,7 @@ class ProductController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Product $product
      * @return Response
-     * @Route ("/product/edit/{id}", name="edit")
+     * @Route ("/product/edit/{id}", name="product_edit")
      * @throws \Exception
      */
     public function editAction(Request $request, EntityManagerInterface $entityManager, Product $product)
@@ -135,15 +137,19 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @param EntityManagerInterface $entityManager
      * @param Product $product
      * @return Response
-     * @Route ("/details/{id}", name="details")
+     * @Route ("/product/details/{id}", name="product_details")
      */
-    public function detailsAction(Product $product)
+    public function detailsAction(EntityManagerInterface $entityManager, Product $product)
     {
+
+        $categories = $entityManager->getRepository('App:Category')->findAll();
         return $this->render(
             'product/details.html.twig', [
-            'product' => $product
+            'product' => $product,
+            'categories' => $categories
         ]);
     }
 

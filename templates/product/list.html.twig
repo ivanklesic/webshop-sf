@@ -38,7 +38,7 @@
                         </td>
 
                         <td>
-                            {{ product.price }}
+                            €{{ product.price }}
                         </td>
 
                         <td>
@@ -46,7 +46,7 @@
                         </td>
 
                         <td>
-                            {{ asset('public/uploads/images' ~ product.image) }}
+                            {{ asset('/uploads/images/' ~ product.image) }}
                         </td>
 
                         <td>
@@ -54,12 +54,12 @@
                         </td>
 
                         <td>
-                            {{ product.proteinRatio }}:{{ product.carbohydrateRatio }}:{{ product.lipidRatio }}
+                            {{ product.proteinPercent }}:{{ product.carbohydratePercent }}:{{ product.lipidPercent }}
                         </td>
 
                         <td>
                             {% for condition in product.conditions %}
-                                {{ condition.name }}{% if not loop.last %}, {% endif %}
+                                {{ condition.description }}{% if not loop.last %}, {% endif %}
                             {% endfor %}
                         </td>
                         <td>

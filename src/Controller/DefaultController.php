@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +30,13 @@ class DefaultController extends AbstractController
                 'products' => $products,
                 'categories' => $categories
             ]);
+        }
+        else if ($this->isGranted('ROLE_SELLER')){
+
+            /** @var User $user */
+            $user = $this->getUser();
+            $sellerProducts = $entityManager->getRepository('App:Product')->getProductsOfSeller($user);
+
         }
         return $this->render('index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR
@@ -59,6 +67,6 @@ class DefaultController extends AbstractController
         return $this->render('index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR
         ]);
-
     }
+
 }

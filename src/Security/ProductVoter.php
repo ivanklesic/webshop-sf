@@ -15,11 +15,12 @@ class ProductVoter extends Voter
     const CREATE = 'create';
     const EDIT = 'edit';
     const DELETE = 'delete';
+    const VIEW = 'view';
 
     protected function supports($attribute, $subject)
     {
 
-        if (!in_array($attribute, [self::CREATE, self::EDIT, self::DELETE])) {
+        if (!in_array($attribute, [self::CREATE, self::EDIT, self::DELETE, self::VIEW])) {
             return false;
         }
 
@@ -50,6 +51,8 @@ class ProductVoter extends Voter
                 return $this->canEdit($product, $user);
             case self::DELETE:
                 return $this->canDelete($product, $user);
+            case self::VIEW:
+                return $this->canView($product, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -57,14 +60,11 @@ class ProductVoter extends Voter
 
     private function canCreate(User $user)
     {
-
         if(in_array('ROLE_SELLER', $user->getRoles())){
             return true;
         }
 
         return false;
-
-
     }
 
     private function canEdit(Product $product, User $user)
@@ -79,6 +79,14 @@ class ProductVoter extends Voter
     private function canDelete(Product $product, User $user)
     {
         return $this->canEdit($product, $user);
+    }
+
+    private function canView(User $user)
+    {
+        if(in_array('ROLE_CUSTOMER', $user->getRoles())){
+            return true;
+        }
+        return false;
     }
 
 }
