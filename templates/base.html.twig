@@ -36,17 +36,19 @@
     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
-                    <li class="nav-item {% if 'product/list' in app.request.attributes.get('_route') %}active{% endif %}">
-                        <a class="nav-link" href="{{ path('product_list') }}">Products</a>
-                    </li>
 
                     <li class="nav-item {% if 'user/list' in app.request.attributes.get('_route') %}active{% endif %}">
                         <a class="nav-link" href="{{ path('user_list') }}">Users</a>
                     </li>
 
                     {% if is_granted('ROLE_SELLER') %}
-                        <li class="nav-item ">
-                            <a class="nav-link" href="{{ path('product_create') }}">Create product for sale</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('product_create') }}">My products</a>
+                        </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_CUSTOMER') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('cart_list') }}">Shopping cart</a>
                         </li>
                     {% endif %}
             </ul>

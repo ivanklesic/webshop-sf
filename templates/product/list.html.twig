@@ -38,7 +38,7 @@
                         </td>
 
                         <td>
-                            €{{ product.price }}
+                            € {{ product.price }}
                         </td>
 
                         <td>
@@ -46,7 +46,7 @@
                         </td>
 
                         <td>
-                            {{ asset('/uploads/images/' ~ product.image) }}
+                            <img class="d-block img-fluid" src="{{ asset('/uploads/images/' ~ product.image) }}" alt="Image not found">
                         </td>
 
                         <td>
@@ -68,8 +68,6 @@
 
 
                         <td>
-                            <a href="{{ path('product_details', {id:product.id}) }}">Details</a>
-                            |
                             <a href="{{ path('product_edit', {id:product.id}) }}">Edit</a>
                             |
                             <a href="{{ path('product_delete', {id:product.id}) }}">Delete</a>
@@ -83,45 +81,12 @@
 
 {% block javascripts %}
     <script>
-        let checkboxList = [];
 
         $(document).ready(function () {
             $('#product-table').DataTable( {
             });
 
-
         });
-
-
-
-        function printInvoice() {
-            let printString = "";
-            printString += '<table style="margin-bottom:10px;" border="1">';
-            let counter = 0;
-            checkboxList.forEach(function (checkBox) {
-                if (counter % 5 === 0) {
-                    printString += '<tr style="page-break-inside:avoid;">';
-                }
-                console.log(checkBox[0] + "  " + checkBox[1]  + "  " + checkBox[2]);
-                printString += '<td style="padding:10px;"><h5>ID: ' + checkBox[0] + '</h5><h5>Name: ' + checkBox[1] + '</h5><img src="' + checkBox[2] + '"/></td>';
-                counter += 1;
-                if (counter % 5 === 0) {
-                    printString += '</tr>';
-                }
-            });
-            printString += '</table>';
-            printQ(printString);
-        }
-
-
-
-        function printQ(printString) {
-            let win = window.open('');
-            win.document.write(printString);
-            win.document.close();
-            win.print();
-            win.close();
-        }
 
     </script>
 {% endblock %}

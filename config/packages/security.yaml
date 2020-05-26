@@ -42,11 +42,11 @@ security:
         - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/?$, role: IS_AUTHENTICATED_REMEMBERED }
         - { path: ^/admin, role: ROLE_ADMIN }
         - { path: ^/user, roles: ROLE_USER }
-        - { path: ^/customer, roles: ROLE_CUSTOMER }
-        - { path: ^/seller, roles: ROLE_SELLER }
+        - { path: ^/cart, roles: ROLE_CUSTOMER }
+        - { path: ^/?$, role: IS_AUTHENTICATED_REMEMBERED }
+
 
         # - { path: ^/?$, role: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }

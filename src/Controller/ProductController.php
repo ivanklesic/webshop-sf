@@ -123,6 +123,10 @@ class ProductController extends AbstractController
             $product->setCreatedAt(new \DateTime());
             $entityManager->persist($product);
             $entityManager->flush();
+            $this->addFlash(
+                'success',
+                'Product edited successfully!'
+            );
             return $this->redirectToRoute('product_details', ['id' => $product->getId()]);
         }
 
@@ -166,6 +170,11 @@ class ProductController extends AbstractController
 
         $entityManager->remove($product);
         $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Product deleted successfully!'
+        );
 
         return $this->redirectToRoute('product_list');
     }

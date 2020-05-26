@@ -35,7 +35,13 @@ class DefaultController extends AbstractController
 
             /** @var User $user */
             $user = $this->getUser();
-            $sellerProducts = $entityManager->getRepository('App:Product')->getProductsOfSeller($user);
+            $products = $entityManager->getRepository('App:Product')->getProductsOfSeller($user);
+
+            return $this->render('product/list.html.twig', [
+                'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
+                'products' => $products,
+
+            ]);
 
         }
         return $this->render('index.html.twig', [
