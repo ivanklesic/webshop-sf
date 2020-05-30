@@ -45,11 +45,14 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('product_create') }}">My products</a>
                         </li>
-                    {% endif %}
-                    {% if is_granted('ROLE_CUSTOMER') %}
+                    {% else if is_granted('ROLE_CUSTOMER') %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('cart_list') }}">Shopping cart</a>
+                            <a class="nav-link" href="{{ path('cart_list') }}">Shopping cart (<span id="cart-size">{{ app.session.get('cart')|length }}</span>)</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('homepage') }}">Browse products</a>
+                        </li>
+                    {% else if is_granted('ROLE_ADMIN') %}
                     {% endif %}
             </ul>
 

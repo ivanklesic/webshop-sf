@@ -4,7 +4,9 @@
 namespace App\Controller;
 
 
+use App\Entity\Order;
 use App\Entity\Product;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,7 +68,7 @@ class CartController extends AbstractController
             }
             $session->set('cart', $cartArray);
 
-            return new JsonResponse(['msg' => $session->get('cart', false) ], 200);
+            return new JsonResponse(['msg' => "Added product to cart", 'size' => count($cartArray) ], 200);
 
         }
         return new JsonResponse(['msg' => 'There was an error.' ], 400);
@@ -113,7 +115,8 @@ class CartController extends AbstractController
         }
         return $this->render(
             'cart/cart.html.twig', [
-            'cart' => $cartArray
+            'cart' => $cartArray,
+            'cartSize' => count($cartArray)
         ]);
 
     }
@@ -133,7 +136,8 @@ class CartController extends AbstractController
         );
         return $this->render(
             'cart/cart.html.twig', [
-            'cart' => null
+            'cart' => null,
+            'cartSize' => 0
         ]);
     }
 
@@ -150,8 +154,53 @@ class CartController extends AbstractController
 
         return $this->render(
             'cart/cart.html.twig', [
-                'cart' => $cartArray
+                'cart' => $cartArray,
+            'cartSize' => count($cartArray)
             ]);
+
+    }
+
+    /**
+     * @Route("/cart/order/", name="cart_order")
+     * @param Request $request
+     * @param SessionInterface $session
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function addOrder(Request $request, SessionInterface $session, EntityManagerInterface $entityManager){
+
+        $this->denyAccessUnlessGranted('ROLE_CUSTOMER');
+        $cartArray = $session->get('cart', null);
+        $order = new Order();
+        $order->setDate(new \DateTime());
+
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        $order->setUser($currentUser);
+        if($cartArray != null){
+
+            foreach ($cartArray as $item){
+                $product = $entityManager->getRepository('App:Product')->find($item["id"]);
+                $product->setQuantity($product->getQuantity() - $item["quantity"]);
+                $order->addProduct($product);
+                $entityManager->persist($product);
+
+            }
+        }
+        $session->set('cart', null);
+        $entityManager->persist($order);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Your purchase was completed successfully and your cart has been cleared'
+        );
+        return $this->render(
+            'cart/cart.html.twig', [
+            'cart' => null,
+            'cartSize' => 0
+        ]);
 
     }
 

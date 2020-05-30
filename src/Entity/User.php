@@ -86,11 +86,6 @@ class User implements UserInterface
     private $productsViewed;
 
     /**
-     * @ORM\OneToMany(targetEntity=UserProductPurchase::class, mappedBy="user", orphanRemoval=true)
-     */
-    private $productsBought;
-
-    /**
      * @ORM\OneToMany(targetEntity=UserProductRating::class, mappedBy="user", orphanRemoval=true)
      */
     private $productsRated;
@@ -105,13 +100,18 @@ class User implements UserInterface
      */
     private $conditions;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $orders;
+
     public function __construct()
     {
         $this->conditions = new ArrayCollection();
         $this->productsViewed = new ArrayCollection();
-        $this->productsBought = new ArrayCollection();
         $this->productsRated = new ArrayCollection();
         $this->productsOnSale = new ArrayCollection();
+        $this->orders = new ArrayCollection();
 
     }
 
@@ -239,36 +239,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|UserProductPurchase[]
-     */
-    public function getProductsBought(): Collection
-    {
-        return $this->productsBought;
-    }
-
-    public function addProductsBought(UserProductPurchase $productsBought): self
-    {
-        if (!$this->productsBought->contains($productsBought)) {
-            $this->productsBought[] = $productsBought;
-            $productsBought->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProductsBought(UserProductPurchase $productsBought): self
-    {
-        if ($this->productsBought->contains($productsBought)) {
-            $this->productsBought->removeElement($productsBought);
-            // set the owning side to null (unless already changed)
-            if ($productsBought->getUser() === $this) {
-                $productsBought->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|UserProductRating[]
@@ -372,6 +342,37 @@ class User implements UserInterface
         if ($this->conditions->contains($condition)) {
             $this->conditions->removeElement($condition);
             $condition->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->contains($order)) {
+            $this->orders->removeElement($order);
+            // set the owning side to null (unless already changed)
+            if ($order->getUser() === $this) {
+                $order->setUser(null);
+            }
         }
 
         return $this;

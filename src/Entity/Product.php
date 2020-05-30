@@ -72,10 +72,6 @@ class Product
      */
     private $viewedBy;
 
-    /**
-     * @ORM\OneToMany(targetEntity=UserProductPurchase::class, mappedBy="product", orphanRemoval=true)
-     */
-    private $boughtBy;
 
     /**
      * @ORM\OneToMany(targetEntity=UserProductRating::class, mappedBy="product", orphanRemoval=true)
@@ -150,12 +146,17 @@ class Product
 
     private $createdAt;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Order::class, mappedBy="products")
+     */
+    private $orders;
+
     public function __construct()
     {
         $this->viewedBy = new ArrayCollection();
-        $this->boughtBy = new ArrayCollection();
         $this->ratedBy = new ArrayCollection();
         $this->conditions = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -243,36 +244,6 @@ class Product
         return $this;
     }
 
-    /**
-     * @return Collection|UserProductPurchase[]
-     */
-    public function getBoughtBy(): Collection
-    {
-        return $this->boughtBy;
-    }
-
-    public function addBoughtBy(UserProductPurchase $boughtBy): self
-    {
-        if (!$this->boughtBy->contains($boughtBy)) {
-            $this->boughtBy[] = $boughtBy;
-            $boughtBy->setProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBoughtBy(UserProductPurchase $boughtBy): self
-    {
-        if ($this->boughtBy->contains($boughtBy)) {
-            $this->boughtBy->removeElement($boughtBy);
-            // set the owning side to null (unless already changed)
-            if ($boughtBy->getProduct() === $this) {
-                $boughtBy->setProduct(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection|UserProductRating[]
@@ -423,6 +394,34 @@ class Product
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->contains($order)) {
+            $this->orders->removeElement($order);
+            $order->removeProduct($this);
+        }
 
         return $this;
     }

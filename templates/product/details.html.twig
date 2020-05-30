@@ -117,7 +117,7 @@
                                 quantity: $('#quantity').val()
                             },
                             success: function(data){
-                                console.log(data['msg']);
+                                $('#cart-size').html(data['size']);
                             }
 
                         });
