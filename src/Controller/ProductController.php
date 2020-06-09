@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserProductView;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Product;
@@ -149,6 +150,29 @@ class ProductController extends AbstractController
     {
 
         $categories = $entityManager->getRepository('App:Category')->findAll();
+        if($this->isGranted('ROLE_CUSTOMER'))
+        {
+
+            /** @var User $user */
+            $user = $this->getUser();
+
+            $previousView = $entityManager->getRepository('App:UserProductView')->findOneBy(['user' => $user, 'product' => $product]);
+            if($previousView)
+            {
+                $previousView->setTime(new \DateTime());
+                $entityManager->persist($previousView);
+            }
+            else
+            {
+                $view = new UserProductView();
+                $view->setTime(new \DateTime());
+                $product->addViewedBy($view);
+                $user->addProductsViewed($view);
+                $entityManager->persist($view);
+                $entityManager->persist($product);
+            }
+            $entityManager->flush();
+        }
         return $this->render(
             'product/details.html.twig', [
             'product' => $product,

@@ -5,70 +5,70 @@ namespace App\Controller;
 
 
 use App\Entity\Category;
+use App\Entity\Condition;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class CategoryController extends AbstractController
+class ConditionController extends AbstractController
 {
     /**
      * @param EntityManagerInterface $entityManager
      * @return Response
-     * @Route("/cat/list", name="cat_list")
+     * @Route("/con/list", name="con_list")
      */
     public function listAction(EntityManagerInterface $entityManager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $categories = $entityManager->getRepository('AppBundle:Category')->findAll();
+        $conditions = $entityManager->getRepository('AppBundle:Condition')->findAll();
 
         return $this->render(
-            'category/list.html.twig', [
-            'categories' => $categories
-            ]);
+            'condition/list.html.twig', [
+            'conditions' => $conditions
+        ]);
     }
 
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
-     * @Route ("/cat/create", name="cat_create")
+     * @Route ("/con/create", name="con_create")
      */
     public function createAction(Request $request, EntityManagerInterface $entityManager)
     {
 
-        $category = new Category();
+        $condition = new Condition();
 
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $form = $this->createForm('App\Form\CategoryType', $category, [
+        $form = $this->createForm('App\Form\CategoryType', $condition, [
             'entityManager' => $entityManager,
-            'category' => $category,
+            'condition' => $condition,
             'user' => $this->getUser()
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $entityManager->persist($category);
+            $entityManager->persist($condition);
             $entityManager->flush();
 
             $this->addFlash(
                 'success',
-                'Category created successfully!'
+                'Condition created successfully!'
             );
-
 
             return $this->redirectToRoute('homepage');
         }
 
 
         return $this->render(
-            'category/create.html.twig', [
+            'product/create.html.twig', [
             'form' => $form->createView(),
-            'category' => $category,
+            'condition' => $condition,
             'edit' => false
         ]);
     }
@@ -94,6 +94,7 @@ class CategoryController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+
             $entityManager->persist($category);
             $entityManager->flush();
             $this->addFlash(
@@ -105,7 +106,7 @@ class CategoryController extends AbstractController
 
 
         return $this->render(
-            'category/create.html.twig', [
+            'product/create.html.twig', [
             'form' => $form->createView(),
             'product' => $category,
             'edit' => true
@@ -130,8 +131,7 @@ class CategoryController extends AbstractController
             'Category deleted successfully!'
         );
 
-        return $this->redirectToRoute('cat_list');
+        return $this->redirectToRoute('product_list');
     }
-
 
 }

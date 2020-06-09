@@ -2,18 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4291a367-a2c7-41d3-af38-22ae9de9fb31" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/templates/condition/create.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/condition/list.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/CartController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CartController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CategoryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CategoryController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/ProductController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ProductController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Category.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Category.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Product.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Product.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/UserProductPurchase.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/UserProductPurchaseRepository.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/UserRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/UserRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DataFixtures/UserFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/UserFixtures.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/CategoryType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/CategoryType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ConditionType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ConditionType.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cart/cart.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cart/cart.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/product/details.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product/details.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,20 +162,20 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/chart" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/templates/condition" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\xampp\htdocs\webshop-sf\src\Validator\Constraints" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\xampp\htdocs\webshop-sf\templates\condition" />
+      <recent name="E:\xampp\htdocs\webshop-sf\templates\category" />
       <recent name="E:\xampp\htdocs\webshop-sf\public\chart" />
       <recent name="E:\xampp\htdocs\webshop-sf\templates\product" />
       <recent name="E:\xampp\htdocs\webshop-sf\templates\user" />
-      <recent name="E:\xampp\htdocs\webshop-sf\src\Form" />
-      <recent name="E:\xampp\htdocs\webshop-sf\templates" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\xampp\htdocs\webshop-sf\src\Validator\Constraints" />
     </key>
   </component>
   <component name="SvnConfiguration">
@@ -212,7 +210,11 @@
       <workItem from="1590575336331" duration="3487000" />
       <workItem from="1590688600404" duration="6415000" />
       <workItem from="1590766660077" duration="11510000" />
-      <workItem from="1590848741970" duration="11974000" />
+      <workItem from="1590848741970" duration="12212000" />
+      <workItem from="1591015050954" duration="242000" />
+      <workItem from="1591015299657" duration="5273000" />
+      <workItem from="1591619272959" duration="9807000" />
+      <workItem from="1591709996365" duration="5362000" />
     </task>
     <servers />
   </component>
@@ -224,30 +226,38 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1627" y="342" key="#PHP/0.0.2560.1400@0.0.2560.1400" timestamp="1589542341452" />
+    <state x="872" y="340" key="#Plugins" timestamp="1591015377105">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="872" y="340" key="#Plugins/0.0.2560.1400@0.0.2560.1400" timestamp="1591015377105" />
     <state x="1374" y="358" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589741239140">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1374" y="358" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1589741239140" />
-    <state x="1650" y="458" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1590863111829">
+    <state x="1650" y="458" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1591713312510">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1650" y="458" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1590863111829" />
+    <state x="1650" y="458" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1591713312510" />
+    <state x="1060" y="454" key="FileChooserDialogImpl" timestamp="1591016277713">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1060" y="454" key="FileChooserDialogImpl/0.0.2560.1400@0.0.2560.1400" timestamp="1591016277713" />
     <state x="1500" y="434" key="IDE.errors.dialog" timestamp="1589554407692">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1500" y="434" key="IDE.errors.dialog/0.0.2560.1400@0.0.2560.1400" timestamp="1589554407692" />
-    <state x="1072" y="422" key="NewPhpClassDialog" timestamp="1590863063474">
+    <state x="1072" y="422" key="NewPhpClassDialog" timestamp="1591711505848">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1072" y="422" key="NewPhpClassDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1590863063474" />
+    <state x="1072" y="422" key="NewPhpClassDialog/0.0.2560.1400@0.0.2560.1400" timestamp="1591711505848" />
     <state x="1512" y="436" key="Vcs.Push.Dialog.v2" timestamp="1589654715489">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1512" y="436" key="Vcs.Push.Dialog.v2/0.0.2560.1400@0.0.2560.1400" timestamp="1589654715489" />
-    <state x="1627" y="433" width="585" height="534" key="find.popup" timestamp="1589633068390">
+    <state x="1627" y="433" width="585" height="534" key="find.popup" timestamp="1591628152806">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="1627" y="433" width="585" height="534" key="find.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1589633068390" />
+    <state x="1627" y="433" width="585" height="534" key="find.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1591628152806" />
     <state x="1583" y="319" width="672" height="678" key="search.everywhere.popup" timestamp="1589646103918">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>

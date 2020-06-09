@@ -152,10 +152,15 @@ class CartController extends AbstractController
 
         $cartArray = $session->get('cart', null);
 
+        $cartSize = array();
+        if($cartArray){
+            $cartSize = count($cartArray);
+        }
+
         return $this->render(
             'cart/cart.html.twig', [
                 'cart' => $cartArray,
-            'cartSize' => count($cartArray)
+            'cartSize' => $cartSize
             ]);
 
     }

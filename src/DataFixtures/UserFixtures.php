@@ -27,10 +27,10 @@ class UserFixtures extends Fixture
                  $user,
                  'adminpass'
              ));
-        $user->setFirstname("admin");
+        $user->setFirstname("Admin");
         $user->setRoles(array('ROLE_USER', 'ROLE_ADMIN'));
-        $user->setLastname("adminovic");
-        $user->setDiet("");
+        $user->setLastname("Admin");
+        $user->setDiet(null);
 
         $manager->persist($user);
         $manager->flush();

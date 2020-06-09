@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if condition %}
+        Edit {{ condition.name }}
+    {% else %}
+        Add a new Condition
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        {{ form_start(form, {'attr': {'class': 'my-form-class'} }) }}
+
+            {{ form_label(form.name) }}
+            {{ form_errors(form.name) }}
+            {{ form_widget(form.name, {'attr': {'class': 'form-control mg-bot-15' }}) }}
+
+            {{ form_label(form.description) }}
+            {{ form_errors(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control mg-bot-15' }}) }}
+
+
+            {{ form_label(form.submit) }}
+        <span>
+            {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success'} } ) }}
+
+        {{ form_end(form) }}
+
+            <a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">Back</a>
+         </span>
+    </div>
+{% endblock %}
+{% block javascripts %}
+
+    <script>
+
+        $(document).ready(function () {
+
+        });
+
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+

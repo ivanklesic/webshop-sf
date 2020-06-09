@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Category list{% endblock %}
+{% block body %}
+    <div class="container-fluid" style="padding: 1% 10%">
+        <div class="d-flex justify-content-between">
+            <h1>
+                Categories
+            </h1>
+            <span>
+                <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="{{ path('cat_create') }}">Add Category</a>
+            </span>
+        </div>
+
+        <table class="table" id="product-table" style="empty-cells: hide">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                    <tr valign="middle">
+                        <td>
+                            {{ category.id }}
+                        </td>
+                        <td>
+                            {{ category.name }}
+                        </td>
+
+
+                        <td>
+                            <a href="{{ path('cat_edit', {id:category.id}) }}">Edit</a>
+                            |
+                            <a href="{{ path('cat_delete', {id:category.id}) }}">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        $(document).ready(function () {
+            $('#product-table').DataTable( {
+            });
+
+        });
+
+    </script>
+{% endblock %}

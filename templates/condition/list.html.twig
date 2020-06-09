@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Condition list{% endblock %}
+{% block body %}
+    <div class="container-fluid" style="padding: 1% 10%">
+        <div class="d-flex justify-content-between">
+            <h1>
+                Conditions
+            </h1>
+            <span>
+                <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="{{ path('con_create') }}">Add Condition</a>
+            </span>
+        </div>
+
+        <table class="table" id="product-table" style="empty-cells: hide">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for condition in conditions %}
+                    <tr valign="middle">
+                        <td>
+                            {{ condition.id }}
+                        </td>
+                        <td>
+                            {{ condition.name }}
+                        </td>
+                        <td>
+                            {{ condition.description }}
+                        </td>
+
+
+                        <td>
+                            <a href="{{ path('con_edit', {id:condition.id}) }}">Edit</a>
+                            |
+                            <a href="{{ path('con_delete', {id:condition.id}) }}">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        $(document).ready(function () {
+            $('#product-table').DataTable( {
+            });
+
+        });
+
+    </script>
+{% endblock %}
