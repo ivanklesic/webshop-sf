@@ -45,7 +45,6 @@ class ConditionController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $form = $this->createForm('App\Form\CategoryType', $condition, [
-            'entityManager' => $entityManager,
             'condition' => $condition,
             'user' => $this->getUser()
         ]);
@@ -55,6 +54,9 @@ class ConditionController extends AbstractController
 
             $entityManager->persist($condition);
             $entityManager->flush();
+
+            $client = $this->get('neo4j.client');
+            $client->run('CREATE (con:Condition {id: '. $condition->getId() .', name: '. $condition->getName() .'})');
 
             $this->addFlash(
                 'success',
@@ -66,7 +68,7 @@ class ConditionController extends AbstractController
 
 
         return $this->render(
-            'product/create.html.twig', [
+            'condition/create.html.twig', [
             'form' => $form->createView(),
             'condition' => $condition,
             'edit' => false
@@ -76,17 +78,16 @@ class ConditionController extends AbstractController
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param Category $category
+     * @param Condition $condition
      * @return Response
-     * @Route ("/cat/edit/{id}", name="cat_edit")
+     * @Route ("/con/edit/{id}", name="con_edit")
      */
-    public function editAction(Request $request, EntityManagerInterface $entityManager, Category $category)
+    public function editAction(Request $request, EntityManagerInterface $entityManager, Condition $condition)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $form = $this->createForm('AppBundle\Form\CategoryType', $category, [
-            'entityManager' => $entityManager,
-            'category' => $category,
+        $form = $this->createForm('AppBundle\Form\ConditionType', $condition, [
+            'condition' => $condition,
             'user' => $this->getUser()
         ]);
 
@@ -95,11 +96,11 @@ class ConditionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
 
-            $entityManager->persist($category);
+            $entityManager->persist($condition);
             $entityManager->flush();
             $this->addFlash(
                 'success',
-                'Category edited successfully!'
+                'Condition edited successfully!'
             );
             return $this->redirectToRoute('homepage');
         }
@@ -108,30 +109,30 @@ class ConditionController extends AbstractController
         return $this->render(
             'product/create.html.twig', [
             'form' => $form->createView(),
-            'product' => $category,
+            'product' => $condition,
             'edit' => true
         ]);
     }
 
     /**
      * @param EntityManagerInterface $entityManager
-     * @param Category $category
+     * @param Condition $condition
      * @return Response
-     * @Route ("/cat/delete/{id}", name="cat_delete")
+     * @Route ("/con/delete/{id}", name="con_delete")
      */
-    public function deleteAction(EntityManagerInterface $entityManager, Category $category)
+    public function deleteAction(EntityManagerInterface $entityManager, Condition $condition)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $entityManager->remove($category);
+        $entityManager->remove($condition);
         $entityManager->flush();
 
         $this->addFlash(
             'success',
-            'Category deleted successfully!'
+            'Condition deleted successfully!'
         );
 
-        return $this->redirectToRoute('product_list');
+        return $this->redirectToRoute('con_list');
     }
 
 }

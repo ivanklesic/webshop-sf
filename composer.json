@@ -5,7 +5,10 @@
         "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-intl": "*",
+        "ext-json": "*",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
+        "neo4j/neo4j-bundle": "^0.4.2",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "4.4.*",
@@ -28,8 +31,7 @@
         "symfony/validator": "4.4.*",
         "symfony/web-link": "4.4.*",
         "symfony/yaml": "4.4.*",
-        "ext-intl": "*",
-        "ext-json": "*"
+        "twig/twig": "2.*"
     },
     "require-dev": {
         "symfony/debug-pack": "*",

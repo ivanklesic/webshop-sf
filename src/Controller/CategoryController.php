@@ -6,13 +6,16 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
+use GraphAware\Neo4j\Client\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class CategoryController extends AbstractController
 {
+
     /**
      * @param EntityManagerInterface $entityManager
      * @return Response
@@ -22,7 +25,7 @@ class CategoryController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $categories = $entityManager->getRepository('AppBundle:Category')->findAll();
+        $categories = $entityManager->getRepository('App\Entity\Category')->findAll();
 
         return $this->render(
             'category/list.html.twig', [
@@ -33,10 +36,11 @@ class CategoryController extends AbstractController
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
+     * @param ClientInterface $client
      * @return Response
      * @Route ("/cat/create", name="cat_create")
      */
-    public function createAction(Request $request, EntityManagerInterface $entityManager)
+    public function createAction(Request $request, EntityManagerInterface $entityManager, ClientInterface $client): Response
     {
 
         $category = new Category();
@@ -44,7 +48,6 @@ class CategoryController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $form = $this->createForm('App\Form\CategoryType', $category, [
-            'entityManager' => $entityManager,
             'category' => $category,
             'user' => $this->getUser()
         ]);
@@ -54,6 +57,14 @@ class CategoryController extends AbstractController
 
             $entityManager->persist($category);
             $entityManager->flush();
+
+
+            //$client->run('CREATE (cat:Category {id: {id}, name: {name}})');
+
+            $query = 'CREATE (cat:Category {id: {id}, name: {name}})';
+            $client->run($query, ['id' => $category->getId(), 'name' => $category->getName()]);
+
+
 
             $this->addFlash(
                 'success',
@@ -84,8 +95,7 @@ class CategoryController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $form = $this->createForm('AppBundle\Form\CategoryType', $category, [
-            'entityManager' => $entityManager,
+        $form = $this->createForm('App\Form\CategoryType', $category, [
             'category' => $category,
             'user' => $this->getUser()
         ]);
@@ -107,20 +117,23 @@ class CategoryController extends AbstractController
         return $this->render(
             'category/create.html.twig', [
             'form' => $form->createView(),
-            'product' => $category,
+            'category' => $category,
             'edit' => true
         ]);
     }
 
     /**
+     * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Category $category
      * @return Response
      * @Route ("/cat/delete/{id}", name="cat_delete")
      */
-    public function deleteAction(EntityManagerInterface $entityManager, Category $category)
+    public function deleteAction(Request $request, EntityManagerInterface $entityManager, Category $category)
     {
+
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
 
         $entityManager->remove($category);
         $entityManager->flush();
@@ -132,6 +145,8 @@ class CategoryController extends AbstractController
 
         return $this->redirectToRoute('cat_list');
     }
+
+
 
 
 }

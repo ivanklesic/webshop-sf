@@ -26,7 +26,6 @@ class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $entityManager = $options['entityManager'];
 
         $builder
             ->add('name', TextType::class, [
@@ -107,7 +106,6 @@ class ProductType extends AbstractType
 
         $resolver->setRequired('user');
         $resolver->setAllowedTypes('user', array(User::class, 'int'));
-        $resolver->setRequired('entityManager');
         $resolver->setRequired('product');
 
     }
