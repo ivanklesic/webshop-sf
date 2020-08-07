@@ -58,13 +58,8 @@ class CategoryController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-
-            //$client->run('CREATE (cat:Category {id: {id}, name: {name}})');
-
             $query = 'CREATE (cat:Category {id: {id}, name: {name}})';
             $client->run($query, ['id' => $category->getId(), 'name' => $category->getName()]);
-
-
 
             $this->addFlash(
                 'success',
@@ -72,7 +67,7 @@ class CategoryController extends AbstractController
             );
 
 
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('cat_list');
         }
 
 
@@ -110,7 +105,7 @@ class CategoryController extends AbstractController
                 'success',
                 'Category edited successfully!'
             );
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('cat_list');
         }
 
 
@@ -122,25 +117,41 @@ class CategoryController extends AbstractController
         ]);
     }
 
+
     /**
-     * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Category $category
+     * @param ClientInterface $client
      * @return Response
      * @Route ("/cat/delete/{id}", name="cat_delete")
      */
-    public function deleteAction(Request $request, EntityManagerInterface $entityManager, Category $category)
+    public function deleteAction(EntityManagerInterface $entityManager, Category $category, ClientInterface $client)
     {
 
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
+        if($category->getProducts()->isEmpty())
+        {
+            $entityManager->remove($category);
 
-        $entityManager->remove($category);
-        $entityManager->flush();
+            $query = 'MATCH (category:Category {id: {categoryID}}) 
+                      DETACH DELETE category';
+
+            $client->run($query, ['categoryID' => $category->getId()]);
+
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'Category deleted successfully!'
+            );
+
+            return $this->redirectToRoute('cat_list');
+        }
 
         $this->addFlash(
-            'success',
-            'Category deleted successfully!'
+            'warning',
+            'The category you are trying to delete still has products in it.'
         );
 
         return $this->redirectToRoute('cat_list');

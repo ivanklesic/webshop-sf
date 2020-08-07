@@ -43,7 +43,7 @@
 
                     {% if is_granted('ROLE_SELLER') %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('product_create') }}">My products</a>
+                            <a class="nav-link" href="{{ path('product_seller_list') }}">My products</a>
                         </li>
                     {% elseif is_granted('ROLE_CUSTOMER') %}
                         <li class="nav-item">
@@ -55,6 +55,12 @@
                     {% elseif is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('cat_list') }}">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('con_list') }}">Medical conditions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('diet_list') }}">Diets</a>
                         </li>
                     {% endif %}
             </ul>

@@ -1,11 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product list{% endblock %}
+{% block title %}
+    {% if 'ROLE_ADMIN' in app.user.roles %}
+    All products
+    {% elseif 'ROLE_SELLER' in app.user.roles %}
+    My products
+    {% endif %}
+{% endblock %}
 {% block body %}
     <div class="container-fluid" style="padding: 1% 10%">
         <div class="d-flex justify-content-between">
             <h1>
-                Products
+                {% if 'ROLE_ADMIN' in app.user.roles %}
+                    All products
+                {% elseif 'ROLE_SELLER' in app.user.roles %}
+                    My products
+                {% endif %}
             </h1>
             <span>
                 <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="{{ path('product_create') }}">Add Product</a>
@@ -21,7 +31,7 @@
                     <th>Stock</th>
                     <th>Image</th>
                     <th>Category</th>
-                    <th>Macronutrient ratio ("protein:carbohydrate:lipid")</th>
+                    <th>Macronutrient ratio (protein:carbohydrate:lipid)</th>
                     <th>Ingredients that can cause complications</th>
                     <th>Greenhouse gas emission (CO2-e)</th>
                     <th>Actions</th>

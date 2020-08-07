@@ -4,6 +4,7 @@ namespace App\Form;
 
 
 use App\Entity\Condition;
+use App\Entity\Diet;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -34,14 +35,7 @@ class UserType  extends AbstractType
         $roles['Customer'] = 'ROLE_CUSTOMER';
         $roles['Seller'] = 'ROLE_SELLER';
 
-        $diets = array();
-        $diets['Atkins'] = 'atkins';
-        $diets['Ketogenic'] = 'ketogenic';
-        $diets['Paleo'] = 'paleo';
-        $diets['Zone'] = 'zone';
-        $diets['Ornish'] = 'ornish';
-        $diets['Mediterranean'] = 'mediterranean';
-        $diets['Gluten free'] = 'glutenfree';
+
 
         $builder
             ->add('username', TextType::class , array(
@@ -67,11 +61,11 @@ class UserType  extends AbstractType
         if($requiredPassword){
             $builder
                 ->add('roles', ChoiceType::class, array(
-                'choices'  => $roles,
-                'label' => 'Role',
-                'multiple' => false))
-                ->add('diet', ChoiceType::class, array(
-                    'choices'  => $diets,
+                    'choices'  => $roles,
+                    'label' => 'Role',
+                    'multiple' => false))
+                ->add('activeDiet', EntityType::class, array(
+                    'choices'  => Diet::class,
                     'label' => 'If you want to get recommendations based on your diet, select one of the following options.',
                     'multiple' => false,
                     'required' => false
@@ -87,12 +81,12 @@ class UserType  extends AbstractType
         }else{
             if(in_array('ROLE_CUSTOMER', $user->getRoles())){
                 $builder
-                ->add('diet', ChoiceType::class, array(
-                    'choices'  => $diets,
-                    'label' => 'If you want to get recommendations based on your diet, select one of the following options.',
-                    'multiple' => false,
-                    'required' => false
-                ))
+                    ->add('activeDiet', EntityType::class, array(
+                        'choices'  => Diet::class,
+                        'label' => 'If you want to get recommendations based on your diet, select one of the following options.',
+                        'multiple' => false,
+                        'required' => false
+                    ))
                     ->add('conditions', EntityType::class, array(
                         'class' => Condition::class,
                         'multiple' => true,

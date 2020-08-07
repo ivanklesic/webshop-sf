@@ -7,13 +7,13 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CartController extends AbstractController
@@ -167,17 +167,16 @@ class CartController extends AbstractController
 
     /**
      * @Route("/cart/order/", name="cart_order")
-     * @param Request $request
      * @param SessionInterface $session
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function addOrder(Request $request, SessionInterface $session, EntityManagerInterface $entityManager){
+    public function addOrder(SessionInterface $session, EntityManagerInterface $entityManager){
 
         $this->denyAccessUnlessGranted('ROLE_CUSTOMER');
         $cartArray = $session->get('cart', null);
         $order = new Order();
-        $order->setDate(new \DateTime());
+        $order->setDate(new DateTime());
 
         /** @var User $currentUser */
         $currentUser = $this->getUser();

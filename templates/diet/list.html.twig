@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Condition list{% endblock %}
+{% block title %}Diet list{% endblock %}
 {% block body %}
     <div class="container-fluid" style="padding: 1% 10%">
         <div class="d-flex justify-content-between">
             <h1>
-                Conditions
+                Diets
             </h1>
             <span>
-                <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="{{ path('con_create') }}">Add Condition</a>
+                <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="{{ path('diet_create') }}">Add Diet</a>
             </span>
         </div>
 
@@ -18,6 +18,7 @@
                     <th>Id</th>
                     <th>Name</th>
                     <th>Dangerous foods and/or ingredients</th>
+                    <th>Macronutrient ratio (protein:carbohydrate:lipid)</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -25,20 +26,22 @@
                 {% for condition in conditions %}
                     <tr valign="middle">
                         <td>
-                            {{ condition.id }}
+                            {{ diet.id }}
                         </td>
                         <td>
-                            {{ condition.name }}
+                            {{ diet.name }}
                         </td>
                         <td>
-                            {{ condition.description }}
+                            {{ diet.description }}
+                        </td>
+                        <td>
+                            {{ diet.proteinPercent }}:{{ diet.carbohydratePercent }}:{{ diet.lipidPercent }}
                         </td>
 
-
                         <td>
-                            <a href="{{ path('con_edit', {id:condition.id}) }}">Edit</a>
+                            <a href="{{ path('diet_edit', {id:diet.id}) }}">Edit</a>
                             |
-                            <a href="{{ path('con_delete', {id:condition.id}) }}">Delete</a>
+                            <a href="{{ path('diet_delete', {id:diet.id}) }}">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}

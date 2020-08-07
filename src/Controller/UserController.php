@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
+use GraphAware\Neo4j\Client\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,9 +37,10 @@ class UserController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param UserPasswordEncoderInterface $encoder
+     * @param ClientInterface $client
      * @return Response
      */
-    public function createAction(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder)
+    public function createAction(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder, ClientInterface $client)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_ANONYMOUSLY');
         if($this->getUser()){
@@ -60,6 +61,41 @@ class UserController extends AbstractController
             $encodedPassword = $encoder->encodePassword($user, $plainPassword);
             $user->setPassword($encodedPassword);
             $entityManager->persist($user);
+
+            if(in_array('ROLE_CUSTOMER', $user->getRoles())){
+
+                    $parameters = [ 'userID' => $user->getId(),
+                        'firstname' => $user->getFirstname(),
+                        'lastname' => $user->getLastname(),
+                    ];
+
+
+                    $query = 'CREATE (user:User {id: {userID}, firstName: {firstname}, lastName: {lastname}}) 
+                               WITH user';
+
+                    if($user->getActiveDiet()){
+                        $query .= 'MATCH (diet:Diet {id: {dietID}}) ';
+                        $parameters['dietID'] = $user->getActiveDiet()->getId();
+                        $query .= 'CREATE (user)-[rel:IS_USING]->(diet) ';
+                    }
+
+                    $query .= 'WITH user ';
+
+                    foreach ($user->getConditions() as $index => $condition){
+                        $query .= 'MATCH (condition'.$index.':Condition {id: {condition'.$index.'ID}}) 
+                              CREATE (user)-[rel:HAS_PROBLEMS_WITH]->(condition'.$index.') 
+                              WITH user 
+                              ';
+                        $parameters['condition'.$index.'ID'] = $condition->getId();
+                    }
+
+                    $query .= 'RETURN user';
+                    $client->run($query, $parameters);
+
+            }
+
+
+
             $entityManager->flush();
 
             $this->addFlash(
@@ -81,11 +117,12 @@ class UserController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param UserPasswordEncoderInterface $encoder
      * @param User $user
+     * @param ClientInterface $client
      * @return Response
      * @Route ("/user/edit/{id}", name="user_edit")
      */
 
-    public function editAction(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder, User $user)
+    public function editAction(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder, User $user, ClientInterface $client)
     {
 
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -112,6 +149,44 @@ class UserController extends AbstractController
                     $user->setPassword($oldPassword);
                 }
                 $entityManager->persist($user);
+
+                if(in_array('ROLE_CUSTOMER', $user->getRoles())){
+
+                    $parameters = [ 'userID' => $user->getId(),
+                        'firstname' => $user->getFirstname(),
+                        'lastname' => $user->getLastname(),
+                    ];
+
+                    $query = 'MATCH (user:User {id: {userID}}) 
+                              MATCH (user)-[relDiet:IS_USING]->() 
+                              MATCH (user)-[relCondition:HAS_PROBLEMS_WITH]->() 
+                              DELETE relDiet 
+                              DELETE relCondition ';
+
+                    if($user->getActiveDiet()){
+                        $query .= 'MATCH (diet:Diet {id: {dietID}}) ';
+                        $parameters['dietID'] = $user->getActiveDiet()->getId();
+                        $query .= 'CREATE (user)-[rel:IS_USING]->(diet) ';
+                    }
+
+                    foreach ($user->getConditions() as $index => $condition){
+                        $query .= 'MATCH (condition'.$index.':Condition {id: {condition'.$index.'ID}}) 
+                              CREATE (user)-[rel:HAS_PROBLEMS_WITH]->(condition'.$index.') 
+                              WITH user 
+                              ';
+                        $parameters['condition'.$index.'ID'] = $condition->getId();
+                    }
+
+                    $query .= 'RETURN user';
+                    $client->run($query, $parameters);
+
+                    $query = 'MATCH (user:User {id: {userID}}) 
+                              SET user.';
+
+                    $client->run($query, ['userID' => $user->getId()]);
+
+                }
+
                 $entityManager->flush();
                 $this->addFlash(
                     'success',
@@ -142,18 +217,27 @@ class UserController extends AbstractController
     }
 
     /**
-     * @param EntityManagerInterface $entityManager
      * @param User $user
-     * @Route ("/user/delete/{id}", name="user_delete")
+     * @param EntityManagerInterface $entityManager
+     * @param ClientInterface $client
      * @return Response
-     * @throws Exception
+     * @Route ("/user/delete/{id}", name="user_delete")
      */
-    public function deleteAction(User $user, EntityManagerInterface $entityManager)
+    public function deleteAction(User $user, EntityManagerInterface $entityManager, ClientInterface $client)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if($user === $this->getUser())
         {
             return $this->redirectToRoute('user_list');
+        }
+
+        if(in_array('ROLE_CUSTOMER', $user->getRoles())){
+
+            $query = 'MATCH (user:User {id: {userID}}) 
+                      DETACH DELETE user';
+
+            $client->run($query, ['userID' => $user->getId()]);
+
         }
 
         $entityManager->remove($user);

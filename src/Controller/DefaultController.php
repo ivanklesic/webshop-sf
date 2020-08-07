@@ -33,16 +33,7 @@ class DefaultController extends AbstractController
         }
         else if ($this->isGranted('ROLE_SELLER')){
 
-            /** @var User $user */
-            $user = $this->getUser();
-            $products = $entityManager->getRepository('App:Product')->getProductsOfSeller($user);
-
-            return $this->render('product/list.html.twig', [
-                'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
-                'products' => $products,
-
-            ]);
-
+            return $this->redirectToRoute('product_seller_list');
         }
         return $this->render('index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR

@@ -3,9 +3,7 @@
 
 namespace App\Controller;
 
-
-
-use App\Entity\Condition;
+use App\Entity\Diet;
 use Doctrine\ORM\EntityManagerInterface;
 use GraphAware\Neo4j\Client\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,22 +11,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ConditionController extends AbstractController
+
+
+class DietController extends AbstractController
 {
     /**
      * @param EntityManagerInterface $entityManager
      * @return Response
-     * @Route("/condition/list", name="con_list")
+     * @Route("/diet/list", name="diet_list")
      */
     public function listAction(EntityManagerInterface $entityManager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $conditions = $entityManager->getRepository('App\Entity\Condition')->findAll();
+        $diets = $entityManager->getRepository('App\Entity\Diet')->findAll();
 
         return $this->render(
-            'condition/list.html.twig', [
-            'conditions' => $conditions
+            'diet/list.html.twig', [
+            'diets' => $diets
         ]);
     }
 
@@ -37,42 +37,43 @@ class ConditionController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param ClientInterface $client
      * @return Response
-     * @Route ("/condition/create", name="con_create")
+     * @Route ("/diet/create", name="diet_create")
      */
     public function createAction(Request $request, EntityManagerInterface $entityManager, ClientInterface $client)
     {
 
-        $condition = new Condition();
+        $diet = new Diet();
 
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $form = $this->createForm('App\Form\ConditionType', $condition, [
-            'condition' => $condition,
+        $form = $this->createForm('App\Form\DietType', $diet, [
+            'diet' => $diet,
             'user' => $this->getUser()
         ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $entityManager->persist($condition);
+            $entityManager->persist($diet);
             $entityManager->flush();
 
-            $query = 'CREATE (con:Condition {id: {id}, name: {name}})';
-            $client->run($query, ['id' => $condition->getId(), 'name' => $condition->getName()]);
+            $query = 'CREATE (diet:Diet {id: {id}, name: {name}})';
+            $client->run($query, ['id' => $diet->getId(), 'name' => $diet->getName()]);
 
             $this->addFlash(
                 'success',
-                'Condition created successfully!'
+                'Diet created successfully!'
             );
 
-            return $this->redirectToRoute('con_list');
+            return $this->redirectToRoute('diet_list');
         }
 
 
         return $this->render(
-            'condition/create.html.twig', [
+            'diet/create.html.twig', [
             'form' => $form->createView(),
-            'condition' => $condition,
+            'condition' => $diet,
             'edit' => false
         ]);
     }
@@ -80,16 +81,17 @@ class ConditionController extends AbstractController
     /**
      * @param Request $request
      * @param EntityManagerInterface $entityManager
-     * @param Condition $condition
+     * @param Diet $diet
+     * @param ClientInterface $client
      * @return Response
-     * @Route ("/condition/edit/{id}", name="con_edit")
+     * @Route ("/diet/edit/{id}", name="diet_edit")
      */
-    public function editAction(Request $request, EntityManagerInterface $entityManager, Condition $condition)
+    public function editAction(Request $request, EntityManagerInterface $entityManager, Diet $diet, ClientInterface $client)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $form = $this->createForm('App\Form\ConditionType', $condition, [
-            'condition' => $condition,
+        $form = $this->createForm('App\Form\DietType', $diet, [
+            'diet' => $diet,
             'user' => $this->getUser()
         ]);
 
@@ -97,62 +99,67 @@ class ConditionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $entityManager->persist($diet);
 
-            $entityManager->persist($condition);
+            $query = 'MATCH (diet:Diet {id: {dietID}}) 
+                      DETACH DELETE diet';
+
+            $client->run($query, ['dietID' => $diet->getId()]);
+
             $entityManager->flush();
             $this->addFlash(
                 'success',
-                'Condition edited successfully!'
+                'Diet edited successfully!'
             );
-            return $this->redirectToRoute('con_list');
+            return $this->redirectToRoute('diet_list');
         }
 
 
         return $this->render(
-            'condition/create.html.twig', [
+            'diet/create.html.twig', [
             'form' => $form->createView(),
-            'condition' => $condition,
+            'diet' => $diet,
             'edit' => true
         ]);
     }
 
     /**
      * @param EntityManagerInterface $entityManager
-     * @param Condition $condition
+     * @param Diet $diet
      * @param ClientInterface $client
      * @return Response
-     * @Route ("/condition/delete/{id}", name="con_delete")
+     * @Route ("/diet/delete/{id}", name="diet_delete")
      */
-    public function deleteAction(EntityManagerInterface $entityManager, Condition $condition, ClientInterface $client)
+    public function deleteAction(EntityManagerInterface $entityManager, Diet $diet, ClientInterface $client)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        if($condition->getProducts()->isEmpty() && $condition->getUsers()->isEmpty())
+        if($diet->getProducts()->isEmpty() && $diet->getUsers()->isEmpty())
         {
-            $entityManager->remove($condition);
+            $entityManager->remove($diet);
 
-            $query = 'MATCH (condition:Condition {id: {conditionID}}) 
-                      DETACH DELETE condition';
+            $query = 'MATCH (diet:Diet {id: {dietID}}) 
+                      DETACH DELETE diet';
 
-            $client->run($query, ['conditionID' => $condition->getId()]);
+            $client->run($query, ['dietID' => $diet->getId()]);
 
             $entityManager->flush();
 
             $this->addFlash(
                 'success',
-                'Condition deleted successfully!'
+                'Diet deleted successfully!'
             );
 
-            return $this->redirectToRoute('con_list');
+            return $this->redirectToRoute('diet_list');
         }
 
         $this->addFlash(
             'warning',
-            'The condition you are trying to delete still has products and/or users attached to it.'
+            'The diet you are trying to delete still has products and/or users attached to it.'
         );
 
 
-        return $this->redirectToRoute('con_list');
+        return $this->redirectToRoute('diet_list');
     }
 
 }

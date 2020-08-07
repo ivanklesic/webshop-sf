@@ -75,12 +75,6 @@ class User implements UserInterface
     private $lastname;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     *
-     */
-    private $diet;
-
-    /**
      * @ORM\OneToMany(targetEntity=UserProductView::class, mappedBy="user", orphanRemoval=true)
      */
     private $productsViewed;
@@ -104,6 +98,11 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Order::class, mappedBy="user", orphanRemoval=true)
      */
     private $orders;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Diet::class, inversedBy="users")
+     */
+    private $activeDiet;
 
     public function __construct()
     {
@@ -192,18 +191,6 @@ class User implements UserInterface
     public function setLastname(string $lastname): self
     {
         $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    public function getDiet(): ?string
-    {
-        return $this->diet;
-    }
-
-    public function setDiet(?string $diet): self
-    {
-        $this->diet = $diet;
 
         return $this;
     }
@@ -374,6 +361,18 @@ class User implements UserInterface
                 $order->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getActiveDiet(): ?Diet
+    {
+        return $this->activeDiet;
+    }
+
+    public function setActiveDiet(?Diet $activeDiet): self
+    {
+        $this->activeDiet = $activeDiet;
 
         return $this;
     }

@@ -86,6 +86,10 @@ class ProductType extends AbstractType
                     return $condition->getDescription();
                     }
             ))
+            ->add('gasEmission', IntegerType::class, [
+
+                'label' => 'Gas emission in CO2-e'
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Submit',
                 'attr' => array('class' => 'btn btn-default')

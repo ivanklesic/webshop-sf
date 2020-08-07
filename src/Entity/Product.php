@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -130,7 +131,7 @@ class Product
     private $lipidPercent;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      * @Assert\Range(
      *      min = 0,
      *      max = 60,
@@ -151,12 +152,18 @@ class Product
      */
     private $orders;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Diet::class, mappedBy="products")
+     */
+    private $diets;
+
     public function __construct()
     {
         $this->viewedBy = new ArrayCollection();
         $this->ratedBy = new ArrayCollection();
         $this->conditions = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->diets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -386,12 +393,12 @@ class Product
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -421,6 +428,34 @@ class Product
         if ($this->orders->contains($order)) {
             $this->orders->removeElement($order);
             $order->removeProduct($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Diet[]
+     */
+    public function getDiets(): Collection
+    {
+        return $this->diets;
+    }
+
+    public function addDiet(Diet $diet): self
+    {
+        if (!$this->diets->contains($diet)) {
+            $this->diets[] = $diet;
+            $diet->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDiet(Diet $diet): self
+    {
+        if ($this->diets->contains($diet)) {
+            $this->diets->removeElement($diet);
+            $diet->removeProduct($this);
         }
 
         return $this;
