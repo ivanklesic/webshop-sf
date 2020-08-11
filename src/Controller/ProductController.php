@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\UserProductView;
 use DateTime;
-use Exception;
 use GraphAware\Neo4j\Client\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,7 +56,7 @@ class ProductController extends AbstractController
         return $this->render(
             'product/list.html.twig', [
             'products' => $products,
-            'user' => $currentUser
+            'user' => $currentUser,
         ]);
     }
 
@@ -98,7 +97,7 @@ class ProductController extends AbstractController
             $product->setCreatedAt(new DateTime());
 
             $entityManager->persist($product);
-
+            $entityManager->flush();
 
             $parameters = [ 'productID' => $product->getId(),
                             'categoryID' => $product->getCategory()->getId(),
@@ -107,24 +106,29 @@ class ProductController extends AbstractController
                             'lipidPercent' => $product->getLipidPercent(),
                             'carbohydratePercent' => $product->getCarbohydratePercent() ];
 
-            $query = 'MATCH (category:Category {id: {categoryID}}) 
-                      CREATE (product:Product {id: {productID}, name: {name}, proteinPercent: {proteinPercent}, lipidPercent: {lipidPercent}, carbohydratePercent: {carbohydratePercent}}) 
+            $query = 'MATCH (category:Category {categoryID: {categoryID}}) 
+                      CREATE (product:Product {productID: {productID}, name: {name}, proteinPercent: {proteinPercent}, lipidPercent: {lipidPercent}, carbohydratePercent: {carbohydratePercent}}) 
                       CREATE (product)-[rel:BELONGS_TO]->(category) 
-                      WITH product 
-                      ';
+                      WITH product ';
 
             foreach ($product->getConditions() as $index => $condition){
-                $query .= 'MATCH (condition'.$index.':Condition {id: {condition'.$index.'ID}}) 
+                $query .= 'MATCH (condition'.$index.':Condition {conditionID: {condition'.$index.'ID}}) 
                           CREATE (product)-[rel:IS_DANGEROUS_TO]->(condition'.$index.') 
                           WITH product 
                           ';
                 $parameters['condition'.$index.'ID'] = $condition->getId();
             }
 
+            foreach ($product->getDiets() as $index => $diet){
+                $query .= 'MATCH (diet'.$index.':Diet {dietID: {diet'.$index.'ID}}) 
+                          CREATE (product)-[rel:IS_EXCLUDED_FROM]->(diet'.$index.') 
+                          WITH product ';
+                $parameters['diet'.$index.'ID'] = $diet->getId();
+            }
+
             $query .= 'RETURN product';
             $client->run($query, $parameters);
 
-            $entityManager->flush();
             $this->addFlash(
                 'success',
                 'Product created successfully!'
@@ -148,11 +152,11 @@ class ProductController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Product $product
+     * @param ClientInterface $client
      * @return Response
      * @Route ("/product/edit/{id}", name="product_edit")
-     * @throws Exception
      */
-    public function editAction(Request $request, EntityManagerInterface $entityManager, Product $product)
+    public function editAction(Request $request, EntityManagerInterface $entityManager, Product $product, ClientInterface $client)
     {
         $this->denyAccessUnlessGranted('edit', $product);
 
@@ -168,11 +172,68 @@ class ProductController extends AbstractController
             $product->setCreatedAt(new DateTime());
             $entityManager->persist($product);
             $entityManager->flush();
+
+
+
+            $parameters = [ 'productID' => $product->getId(),
+                            'categoryID' => $product->getCategory()->getId(),
+                            'name' => $product->getName(),
+                            'proteinPercent' => $product->getProteinPercent(),
+                            'lipidPercent' => $product->getLipidPercent(),
+                            'carbohydratePercent' => $product->getCarbohydratePercent() ];
+
+            $query = 'MATCH (product:Product {productID: {productID}}) 
+                      MATCH (product)-[relCategory:BELONGS_TO]->() 
+                      DELETE relCategory 
+                      WITH product 
+                      MATCH (product)-[relCondition:IS_DANGEROUS_TO]->() 
+                      DELETE relCondition 
+                      WITH product 
+                      MATCH (product)-[relDiet:IS_EXCLUDED_FROM]->() 
+                      DELETE relDiet 
+                      ';
+
+            $client->run($query, $parameters);
+
+            $query =  'MATCH (product:Product {productID: {productID}}) 
+                       SET product.lipidPercent = {lipidPercent} 
+                       SET product.name = {name} 
+                       SET product.proteinPercent = {proteinPercent} 
+                       SET product.carbohydratePercent = {carbohydratePercent} 
+                       ';
+
+            $client->run($query, $parameters);
+
+            $query =  'MATCH (product:Product {productID: {productID}}) 
+                       MATCH (category:Category {categoryID: {categoryID}}) 
+                       CREATE (product)-[rel:BELONGS_TO]->(category) 
+                       ';
+
+            $client->run($query, $parameters);
+
+            foreach ($product->getConditions() as $condition){
+                $query = 'MATCH (condition:Condition {conditionID: {conditionID}}) 
+                          MATCH (product:Product {productID: {productID}}) 
+                          CREATE (product)-[rel:IS_DANGEROUS_TO]->(condition) 
+                           ';
+                $parameters['conditionID'] = $condition->getId();
+                $client->run($query, $parameters);
+            }
+
+            foreach ($product->getDiets() as $diet){
+                $query = 'MATCH (diet:Diet {dietID: {dietID}}) 
+                          MATCH (product:Product {productID: {productID}}) 
+                          CREATE (product)-[rel:IS_EXCLUDED_FROM]->(diet) 
+                          ';
+                $parameters['dietID'] = $diet->getId();
+                $client->run($query, $parameters);
+            }
+
             $this->addFlash(
                 'success',
                 'Product edited successfully!'
             );
-            return $this->redirectToRoute('product_details', ['id' => $product->getId()]);
+            return $this->redirectToRoute('homepage');
         }
 
 
@@ -188,10 +249,11 @@ class ProductController extends AbstractController
     /**
      * @param EntityManagerInterface $entityManager
      * @param Product $product
+     * @param ClientInterface $client
      * @return Response
      * @Route ("/product/details/{id}", name="product_details")
      */
-    public function detailsAction(EntityManagerInterface $entityManager, Product $product)
+    public function detailsAction(EntityManagerInterface $entityManager, Product $product, ClientInterface $client)
     {
 
         $categories = $entityManager->getRepository('App:Category')->findAll();
@@ -201,22 +263,34 @@ class ProductController extends AbstractController
             /** @var User $user */
             $user = $this->getUser();
 
+            $currentTime = new DateTime();
+
             $previousView = $entityManager->getRepository('App:UserProductView')->findOneBy(['user' => $user, 'product' => $product]);
             if($previousView)
             {
-                $previousView->setTime(new DateTime());
+                $previousView->setTime($currentTime);
                 $entityManager->persist($previousView);
             }
             else
             {
                 $view = new UserProductView();
-                $view->setTime(new DateTime());
+                $view->setTime($currentTime);
                 $product->addViewedBy($view);
                 $user->addProductsViewed($view);
                 $entityManager->persist($view);
                 $entityManager->persist($product);
             }
             $entityManager->flush();
+
+            $parameters = ['userID' => $user->getId(), 'productID' => $product->getId(), 'dateTime' => $currentTime->format('Y-m-d H:i:s')];
+
+            $query = 'MATCH (product:Product {productID: {productID}}) 
+                      MATCH (user:User {userID: {userID}}) 
+                      MERGE (user)-[rel:VIEWED]->(product) 
+                      SET rel.datetime = {dateTime} 
+                      ';
+
+            $client->run($query, $parameters);
         }
         return $this->render(
             'product/details.html.twig', [
@@ -236,20 +310,22 @@ class ProductController extends AbstractController
     {
         $this->denyAccessUnlessGranted('delete', $product);
 
+
+        $parameters = ['productID' => $product->getId()];
+
         $entityManager->remove($product);
-
-        $query = 'MATCH (product:Product {id: {productID}}) 
-                      DETACH DELETE product';
-
-        $client->run($query, ['productID' => $product->getId()]);
-
         $entityManager->flush();
+
+        $query = 'MATCH (product:Product {productID: {productID}}) 
+                  DETACH DELETE product';
+
+        $client->run($query, $parameters);
 
         $this->addFlash(
             'success',
             'Product deleted successfully!'
         );
 
-        return $this->redirectToRoute('product_list');
+        return $this->redirectToRoute('homepage');
     }
 }

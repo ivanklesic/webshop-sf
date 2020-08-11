@@ -4,6 +4,7 @@
 namespace App\Form;
 use App\Entity\Category;
 use App\Entity\Condition;
+use App\Entity\Diet;
 use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -84,7 +85,17 @@ class ProductType extends AbstractType
                 'expanded' => true,
                 'choice_label' => function ($condition) {
                     return $condition->getDescription();
-                    }
+                }
+            ))
+            ->add('diets', EntityType::class, array(
+                'class' => Diet::class,
+                'multiple' => true,
+                'required' => false,
+                'label' => 'If your product contains any of the ingredients below, please check them',
+                'expanded' => true,
+                'choice_label' => function ($diet) {
+                    return $diet->getDescription();
+                }
             ))
             ->add('gasEmission', IntegerType::class, [
 

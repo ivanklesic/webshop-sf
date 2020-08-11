@@ -58,7 +58,8 @@ class CategoryController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            $query = 'CREATE (cat:Category {id: {id}, name: {name}})';
+            $query = 'CREATE (cat:Category {categoryID: {id}, name: {name}}) 
+                      RETURN cat';
             $client->run($query, ['id' => $category->getId(), 'name' => $category->getName()]);
 
             $this->addFlash(
@@ -83,10 +84,11 @@ class CategoryController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Category $category
+     * @param ClientInterface $client
      * @return Response
      * @Route ("/cat/edit/{id}", name="cat_edit")
      */
-    public function editAction(Request $request, EntityManagerInterface $entityManager, Category $category)
+    public function editAction(Request $request, EntityManagerInterface $entityManager, Category $category, ClientInterface $client)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -100,6 +102,16 @@ class CategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManager->persist($category);
+
+            $parameters = [ 'categoryID' => $category->getId(),
+                            'name' => $category->getName()
+            ];
+
+            $query = 'MATCH (cat:Category {categoryID: {categoryID}}) 
+                      SET cat.name = {name} 
+                      RETURN cat';
+            $client->run($query, $parameters);
+
             $entityManager->flush();
             $this->addFlash(
                 'success',
@@ -132,14 +144,18 @@ class CategoryController extends AbstractController
 
         if($category->getProducts()->isEmpty())
         {
-            $entityManager->remove($category);
 
-            $query = 'MATCH (category:Category {id: {categoryID}}) 
+            $parameters = ['categoryID' => $category->getId()];
+
+            $entityManager->remove($category);
+            $entityManager->flush();
+
+            $query = 'MATCH (category:Category {categoryID: {categoryID}}) 
                       DETACH DELETE category';
 
-            $client->run($query, ['categoryID' => $category->getId()]);
+            $client->run($query, $parameters);
 
-            $entityManager->flush();
+
 
             $this->addFlash(
                 'success',

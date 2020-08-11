@@ -33,7 +33,7 @@ class Diet
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Product::class, inversedBy="diets")
+     * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="diets")
      */
     private $products;
 

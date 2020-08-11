@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
+    {% if edit %}
+        Edit {{ user.username }}
+    {% else %}
         Add a new User
+    {% endif %}
 {% endblock %}
 {% block body %}
 
@@ -11,42 +15,42 @@
             {{ form_label(form.username) }}
             {{ form_errors(form.username) }}
             {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
-
+        <br>
             {{ form_label(form.password.first) }}
             {{ form_errors(form.password.first) }}
             {{ form_widget(form.password.first, {'attr': {'class': 'form-control'}}) }}
-
+        <br>
             {{ form_label(form.password.second) }}
             {{ form_errors(form.password.second) }}
             {{ form_widget(form.password.second, {'attr': {'class': 'form-control'}}) }}
-
+        <br>
             {{ form_label(form.firstname) }}
             {{ form_errors(form.firstname) }}
             {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
-
+        <br>
             {{ form_label(form.lastname) }}
             {{ form_errors(form.lastname) }}
             {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
-
+        <br>
         {% if not edit %}
 
             {{ form_label(form.roles) }}
             {{ form_errors(form.roles) }}
             {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
-
-            {{ form_label(form.diet) }}
-            {{ form_errors(form.diet) }}
-            {{ form_widget(form.diet, {'attr': {'class': 'form-control'}}) }}
-
+            <br>
+            {{ form_label(form.activeDiet) }}
+            {{ form_errors(form.activeDiet) }}
+            {{ form_widget(form.activeDiet, {'attr': {'class': 'form-control'}}) }}
+            <br>
             {{ form_label(form.conditions) }}
             {{ form_errors(form.conditions) }}
             {{ form_widget(form.conditions, {'attr': {'class': 'form-control'}}) }}
         {% else %}
             {% if 'ROLE_CUSTOMER' in user.roles %}
-                {{ form_label(form.diet) }}
-                {{ form_errors(form.diet) }}
-                {{ form_widget(form.diet, {'attr': {'class': 'form-control'}}) }}
-
+                {{ form_label(form.activeDiet) }}
+                {{ form_errors(form.activeDiet) }}
+                {{ form_widget(form.activeDiet, {'attr': {'class': 'form-control'}}) }}
+                <br>
                 {{ form_label(form.conditions) }}
                 {{ form_errors(form.conditions) }}
                 {{ form_widget(form.conditions, {'attr': {'class': 'form-control'}}) }}
@@ -81,9 +85,9 @@
             if($('#user_roles').val() === 'ROLE_SELLER'){
                 $("#user_diet").val('').trigger('change');
                 uncheckAll();
-                toggle('user_diet');
+                toggle('user_activeDiet');
                 toggle('user_conditions');
-                document.getElementById('user_diet').label.innerHTML = "";
+                document.getElementById('user_activeDiet').label.innerHTML = "";
                 labels[7].innerHTML = "";
 
             }
@@ -92,13 +96,13 @@
             $('#user_roles').on('select2:select', function(e) {
                     $("#user_diet").val('').trigger('change');
                     uncheckAll();
-                    toggle('user_diet');
+                    toggle('user_activeDiet');
                     toggle('user_conditions');
                     if($(this).val() === 'ROLE_SELLER'){
-                        document.getElementById('user_diet').label.innerHTML = "";
+                        document.getElementById('user_activeDiet').label.innerHTML = "";
                         labels[7].innerHTML = "";
                     }else{
-                        document.getElementById('user_diet').label.innerHTML = "If you want to get recommendations based on your diet, select one of the following options";
+                        document.getElementById('user_activeDiet').label.innerHTML = "If you want to get recommendations based on your diet, select one of the following options";
                         labels[7].innerHTML = "Select medical conditions which affect you. This will be used to generate warnings on checkout";
                     }
 

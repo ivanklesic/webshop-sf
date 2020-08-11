@@ -51,8 +51,6 @@ class ProductVoter extends Voter
                 return $this->canEdit($product, $user);
             case self::DELETE:
                 return $this->canDelete($product, $user);
-            case self::VIEW:
-                return $this->canView($product, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -81,12 +79,5 @@ class ProductVoter extends Voter
         return $this->canEdit($product, $user);
     }
 
-    private function canView(User $user)
-    {
-        if(in_array('ROLE_CUSTOMER', $user->getRoles())){
-            return true;
-        }
-        return false;
-    }
 
 }

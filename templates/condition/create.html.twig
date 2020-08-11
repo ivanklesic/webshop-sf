@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {% if condition %}
+    {% if edit %}
         Edit {{ condition.name }}
     {% else %}
         Add a new Condition
@@ -15,10 +15,12 @@
             {{ form_errors(form.name) }}
             {{ form_widget(form.name, {'attr': {'class': 'form-control mg-bot-15' }}) }}
 
+        <br>
+
             {{ form_label(form.description) }}
             {{ form_errors(form.description) }}
             {{ form_widget(form.description, {'attr': {'class': 'form-control mg-bot-15' }}) }}
-
+        <br>
 
             {{ form_label(form.submit) }}
         <span>

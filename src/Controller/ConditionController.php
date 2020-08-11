@@ -57,8 +57,9 @@ class ConditionController extends AbstractController
             $entityManager->persist($condition);
             $entityManager->flush();
 
-            $query = 'CREATE (con:Condition {id: {id}, name: {name}})';
-            $client->run($query, ['id' => $condition->getId(), 'name' => $condition->getName()]);
+            $query = 'CREATE (con:Condition {conditionID: {id}, name: {name}}) 
+                      RETURN con';
+            $client->run($query, ['id' => $condition->getId(), 'name' => $condition->getName(), 'description' => $condition->getDescription()]);
 
             $this->addFlash(
                 'success',
@@ -81,10 +82,11 @@ class ConditionController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param Condition $condition
+     * @param ClientInterface $client
      * @return Response
      * @Route ("/condition/edit/{id}", name="con_edit")
      */
-    public function editAction(Request $request, EntityManagerInterface $entityManager, Condition $condition)
+    public function editAction(Request $request, EntityManagerInterface $entityManager, Condition $condition, ClientInterface $client)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -100,6 +102,20 @@ class ConditionController extends AbstractController
 
             $entityManager->persist($condition);
             $entityManager->flush();
+
+            $parameters = [ 'conditionID' => $condition->getId(),
+                            'name' => $condition->getName(),
+                            'description' => $condition->getDescription(),
+            ];
+
+            $query = 'MATCH (condition:Condition {conditionID: {conditionID}}) 
+                      SET condition.name = {name} 
+                      SET condition.description = {description} 
+                      RETURN condition';
+
+            $client->run($query, $parameters);
+
+
             $this->addFlash(
                 'success',
                 'Condition edited successfully!'
@@ -129,14 +145,18 @@ class ConditionController extends AbstractController
 
         if($condition->getProducts()->isEmpty() && $condition->getUsers()->isEmpty())
         {
-            $entityManager->remove($condition);
 
-            $query = 'MATCH (condition:Condition {id: {conditionID}}) 
+            $parameters = ['conditionID' => $condition->getId()];
+
+            $entityManager->remove($condition);
+            $entityManager->flush();
+
+            $query = 'MATCH (condition:Condition {conditionID: {conditionID}}) 
                       DETACH DELETE condition';
 
-            $client->run($query, ['conditionID' => $condition->getId()]);
+            $client->run($query, $parameters);
 
-            $entityManager->flush();
+
 
             $this->addFlash(
                 'success',

@@ -153,7 +153,7 @@ class Product
     private $orders;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Diet::class, mappedBy="products")
+     * @ORM\ManyToMany(targetEntity=Diet::class, inversedBy="products")
      */
     private $diets;
 

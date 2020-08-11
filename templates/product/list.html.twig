@@ -17,9 +17,12 @@
                     My products
                 {% endif %}
             </h1>
+            {% if 'ROLE_SELLER' in app.user.roles %}
             <span>
                 <a class="btn btn-success float-right" style="margin:10px 0 10px 10px;" href="{{ path('product_create') }}">Add Product</a>
             </span>
+            {% endif %}
+
         </div>
 
         <table class="table" id="product-table" style="empty-cells: hide">

@@ -65,7 +65,7 @@ class UserType  extends AbstractType
                     'label' => 'Role',
                     'multiple' => false))
                 ->add('activeDiet', EntityType::class, array(
-                    'choices'  => Diet::class,
+                    'class'  => Diet::class,
                     'label' => 'If you want to get recommendations based on your diet, select one of the following options.',
                     'multiple' => false,
                     'required' => false
@@ -82,7 +82,7 @@ class UserType  extends AbstractType
             if(in_array('ROLE_CUSTOMER', $user->getRoles())){
                 $builder
                     ->add('activeDiet', EntityType::class, array(
-                        'choices'  => Diet::class,
+                        'class'  => Diet::class,
                         'label' => 'If you want to get recommendations based on your diet, select one of the following options.',
                         'multiple' => false,
                         'required' => false

@@ -58,8 +58,17 @@ class DietController extends AbstractController
             $entityManager->persist($diet);
             $entityManager->flush();
 
-            $query = 'CREATE (diet:Diet {id: {id}, name: {name}})';
-            $client->run($query, ['id' => $diet->getId(), 'name' => $diet->getName()]);
+            $parameters = [ 'dietID' => $diet->getId(),
+                            'name' => $diet->getName(),
+                            'description' => $diet->getDescription(),
+                            'proteinPercent' => $diet->getProteinPercent(),
+                            'lipidPercent' => $diet->getLipidPercent(),
+                            'carbohydratePercent' => $diet->getCarbohydratePercent(),
+            ];
+
+            $query = 'CREATE (diet:Diet {dietID: {dietID}, name: {name}, description: {description}, proteinPercent: {proteinPercent}, lipidPercent: {lipidPercent}, carbohydratePercent: {carbohydratePercent}}) 
+                      RETURN diet';
+            $client->run($query, $parameters);
 
             $this->addFlash(
                 'success',
@@ -73,7 +82,7 @@ class DietController extends AbstractController
         return $this->render(
             'diet/create.html.twig', [
             'form' => $form->createView(),
-            'condition' => $diet,
+            'diet' => $diet,
             'edit' => false
         ]);
     }
@@ -100,13 +109,26 @@ class DietController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $entityManager->persist($diet);
-
-            $query = 'MATCH (diet:Diet {id: {dietID}}) 
-                      DETACH DELETE diet';
-
-            $client->run($query, ['dietID' => $diet->getId()]);
-
             $entityManager->flush();
+
+            $parameters = [ 'dietID' => $diet->getId(),
+                            'name' => $diet->getName(),
+                            'description' => $diet->getDescription(),
+                            'proteinPercent' => $diet->getProteinPercent(),
+                            'lipidPercent' => $diet->getLipidPercent(),
+                            'carbohydratePercent' => $diet->getCarbohydratePercent(),
+            ];
+
+            $query = 'MATCH (diet:Diet {dietID: {dietID}}) 
+                      SET diet.name = {name} 
+                      SET diet.description = {description} 
+                      SET diet.proteinPercent = {proteinPercent} 
+                      SET diet.lipidPercent = {lipidPercent} 
+                      SET diet.carbohydratePercent = {carbohydratePercent} 
+                      RETURN diet';
+
+            $client->run($query, $parameters);
+
             $this->addFlash(
                 'success',
                 'Diet edited successfully!'
@@ -136,14 +158,17 @@ class DietController extends AbstractController
 
         if($diet->getProducts()->isEmpty() && $diet->getUsers()->isEmpty())
         {
+            $parameters = ['dietID' => $diet->getId()];
             $entityManager->remove($diet);
-
-            $query = 'MATCH (diet:Diet {id: {dietID}}) 
-                      DETACH DELETE diet';
-
-            $client->run($query, ['dietID' => $diet->getId()]);
-
             $entityManager->flush();
+
+            $query = 'MATCH (diet:Diet {dietID: {dietID}}) 
+                      DETACH DELETE diet ';
+
+
+            $client->run($query, $parameters);
+
+
 
             $this->addFlash(
                 'success',

@@ -60,29 +60,30 @@ class UserController extends AbstractController
             $plainPassword = $user->getPassword();
             $encodedPassword = $encoder->encodePassword($user, $plainPassword);
             $user->setPassword($encodedPassword);
+
             $entityManager->persist($user);
+            $entityManager->flush();
 
             if(in_array('ROLE_CUSTOMER', $user->getRoles())){
 
                     $parameters = [ 'userID' => $user->getId(),
-                        'firstname' => $user->getFirstname(),
-                        'lastname' => $user->getLastname(),
+                                    'firstname' => $user->getFirstname(),
+                                    'lastname' => $user->getLastname(),
                     ];
 
 
-                    $query = 'CREATE (user:User {id: {userID}, firstName: {firstname}, lastName: {lastname}}) 
-                               WITH user';
+                    $query = 'CREATE (user:User {userID: {userID}, firstName: {firstname}, lastName: {lastname}}) 
+                               WITH user ';
 
                     if($user->getActiveDiet()){
-                        $query .= 'MATCH (diet:Diet {id: {dietID}}) ';
+                        $query .= 'MATCH (diet:Diet {dietID: {dietID}}) ';
                         $parameters['dietID'] = $user->getActiveDiet()->getId();
-                        $query .= 'CREATE (user)-[rel:IS_USING]->(diet) ';
+                        $query .= 'CREATE (user)-[rel:IS_USING]->(diet) 
+                                   WITH user ';
                     }
 
-                    $query .= 'WITH user ';
-
                     foreach ($user->getConditions() as $index => $condition){
-                        $query .= 'MATCH (condition'.$index.':Condition {id: {condition'.$index.'ID}}) 
+                        $query .= 'MATCH (condition'.$index.':Condition {conditionID: {condition'.$index.'ID}}) 
                               CREATE (user)-[rel:HAS_PROBLEMS_WITH]->(condition'.$index.') 
                               WITH user 
                               ';
@@ -91,12 +92,7 @@ class UserController extends AbstractController
 
                     $query .= 'RETURN user';
                     $client->run($query, $parameters);
-
             }
-
-
-
-            $entityManager->flush();
 
             $this->addFlash(
                 'success',
@@ -149,6 +145,7 @@ class UserController extends AbstractController
                     $user->setPassword($oldPassword);
                 }
                 $entityManager->persist($user);
+                $entityManager->flush();
 
                 if(in_array('ROLE_CUSTOMER', $user->getRoles())){
 
@@ -157,37 +154,43 @@ class UserController extends AbstractController
                         'lastname' => $user->getLastname(),
                     ];
 
-                    $query = 'MATCH (user:User {id: {userID}}) 
+                    $query = 'MATCH (user:User {userID: {userID}}) 
                               MATCH (user)-[relDiet:IS_USING]->() 
-                              MATCH (user)-[relCondition:HAS_PROBLEMS_WITH]->() 
                               DELETE relDiet 
-                              DELETE relCondition ';
+                              WITH user 
+                              MATCH (user)-[relCondition:HAS_PROBLEMS_WITH]->() 
+                              DELETE relCondition 
+                              ';
+
+                    $client->run($query, $parameters);
+
+                    $query = 'MATCH (user:User {userID: {userID}}) 
+                              SET user.firstName = {firstname} 
+                              SET user.lastName = {lastname} 
+                              ';
+
+                    $client->run($query, $parameters);
 
                     if($user->getActiveDiet()){
-                        $query .= 'MATCH (diet:Diet {id: {dietID}}) ';
+                        $query = 'MATCH (diet:Diet {dietID: {dietID}}) 
+                                  MATCH (user:User {userID: {userID}}) 
+                                  CREATE (user)-[rel:IS_USING]->(diet) 
+                                  ';
                         $parameters['dietID'] = $user->getActiveDiet()->getId();
-                        $query .= 'CREATE (user)-[rel:IS_USING]->(diet) ';
+                        $client->run($query, $parameters);
                     }
 
                     foreach ($user->getConditions() as $index => $condition){
-                        $query .= 'MATCH (condition'.$index.':Condition {id: {condition'.$index.'ID}}) 
-                              CREATE (user)-[rel:HAS_PROBLEMS_WITH]->(condition'.$index.') 
-                              WITH user 
-                              ';
-                        $parameters['condition'.$index.'ID'] = $condition->getId();
+                        $query =  'MATCH (condition:Condition {conditionID: {conditionID}}) 
+                                   MATCH (user:User {userID: {userID}}) 
+                                   CREATE (user)-[rel:HAS_PROBLEMS_WITH]->(condition)                                    
+                                   ';
+                        $parameters['conditionID'] = $condition->getId();
+                        $client->run($query, $parameters);
                     }
-
-                    $query .= 'RETURN user';
-                    $client->run($query, $parameters);
-
-                    $query = 'MATCH (user:User {id: {userID}}) 
-                              SET user.';
-
-                    $client->run($query, ['userID' => $user->getId()]);
 
                 }
 
-                $entityManager->flush();
                 $this->addFlash(
                     'success',
                     'Profile edited successfully!'
@@ -233,8 +236,8 @@ class UserController extends AbstractController
 
         if(in_array('ROLE_CUSTOMER', $user->getRoles())){
 
-            $query = 'MATCH (user:User {id: {userID}}) 
-                      DETACH DELETE user';
+            $query = 'MATCH (user:User {userID: {userID}}) 
+                      DETACH DELETE user ';
 
             $client->run($query, ['userID' => $user->getId()]);
 

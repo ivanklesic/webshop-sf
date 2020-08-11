@@ -8,6 +8,7 @@ use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
 use DateTime;
+use GraphAware\Neo4j\Client\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -169,17 +170,20 @@ class CartController extends AbstractController
      * @Route("/cart/order/", name="cart_order")
      * @param SessionInterface $session
      * @param EntityManagerInterface $entityManager
+     * @param ClientInterface $client
      * @return Response
      */
-    public function addOrder(SessionInterface $session, EntityManagerInterface $entityManager){
+    public function addOrder(SessionInterface $session, EntityManagerInterface $entityManager, ClientInterface $client){
 
         $this->denyAccessUnlessGranted('ROLE_CUSTOMER');
         $cartArray = $session->get('cart', null);
         $order = new Order();
+        $currentTime = new DateTime();
         $order->setDate(new DateTime());
 
         /** @var User $currentUser */
         $currentUser = $this->getUser();
+
 
         $order->setUser($currentUser);
         if($cartArray != null){
@@ -189,6 +193,16 @@ class CartController extends AbstractController
                 $product->setQuantity($product->getQuantity() - $item["quantity"]);
                 $order->addProduct($product);
                 $entityManager->persist($product);
+
+                $parameters = ['userID' => $currentUser->getId(), 'productID' => $product->getId(), 'dateTime' => $currentTime->format('Y-m-d H:i:s')];
+
+                $query = 'MATCH (product:Product {productID: {productID}}) 
+                      MATCH (user:User {userID: {userID}}) 
+                      MERGE (user)-[rel:BOUGHT]->(product) 
+                      SET rel.datetime = {dateTime} 
+                      ';
+
+                $client->run($query, $parameters);
 
             }
         }

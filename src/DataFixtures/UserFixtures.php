@@ -7,6 +7,7 @@ use App\Entity\User as User;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+
 class UserFixtures extends Fixture
 {
 
@@ -30,7 +31,6 @@ class UserFixtures extends Fixture
         $user->setFirstname("Admin");
         $user->setRoles(array('ROLE_USER', 'ROLE_ADMIN'));
         $user->setLastname("Admin");
-        $user->setDiet(null);
 
         $manager->persist($user);
         $manager->flush();

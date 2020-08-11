@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {% if diet %}
+    {% if edit %}
         Edit {{ diet.name }}
     {% else %}
         Add a new Diet
@@ -14,7 +14,7 @@
             {{ form_label(form.name) }}
             {{ form_errors(form.name) }}
             {{ form_widget(form.name, {'attr': {'class': 'form-control mg-bot-15' }}) }}
-
+        <br>
             {{ form_label(form.description) }}
             {{ form_errors(form.description) }}
             {{ form_widget(form.description, {'attr': {'class': 'form-control mg-bot-15' }}) }}
@@ -32,7 +32,7 @@
         {{ form_errors(form.lipidPercent) }}
         {{ form_widget(form.lipidPercent, {'attr': {'class': 'form-control mg-bot-15'}}) }}
 
-
+        <br>
             {{ form_label(form.submit) }}
         <span>
             {{ form_widget(form.submit, {'attr': {'class': 'btn btn-success'} } ) }}
