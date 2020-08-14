@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserProductRating;
 use App\Entity\UserProductView;
 use DateTime;
 use GraphAware\Neo4j\Client\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Product;
 use Doctrine\ORM\EntityManagerInterface;
@@ -104,10 +106,12 @@ class ProductController extends AbstractController
                             'name' => $product->getName(),
                             'proteinPercent' => $product->getProteinPercent(),
                             'lipidPercent' => $product->getLipidPercent(),
-                            'carbohydratePercent' => $product->getCarbohydratePercent() ];
+                            'carbohydratePercent' => $product->getCarbohydratePercent(),
+                            'emission' => $product->getGasEmission()
+            ];
 
             $query = 'MATCH (category:Category {categoryID: {categoryID}}) 
-                      CREATE (product:Product {productID: {productID}, name: {name}, proteinPercent: {proteinPercent}, lipidPercent: {lipidPercent}, carbohydratePercent: {carbohydratePercent}}) 
+                      CREATE (product:Product {productID: {productID}, name: {name}, proteinPercent: {proteinPercent}, lipidPercent: {lipidPercent}, carbohydratePercent: {carbohydratePercent}, emission: {emission}}) 
                       CREATE (product)-[rel:BELONGS_TO]->(category) 
                       WITH product ';
 
@@ -180,7 +184,8 @@ class ProductController extends AbstractController
                             'name' => $product->getName(),
                             'proteinPercent' => $product->getProteinPercent(),
                             'lipidPercent' => $product->getLipidPercent(),
-                            'carbohydratePercent' => $product->getCarbohydratePercent() ];
+                            'carbohydratePercent' => $product->getCarbohydratePercent(),
+                            'emission' => $product->getGasEmission()];
 
             $query = 'MATCH (product:Product {productID: {productID}}) 
                       MATCH (product)-[relCategory:BELONGS_TO]->() 
@@ -200,6 +205,7 @@ class ProductController extends AbstractController
                        SET product.name = {name} 
                        SET product.proteinPercent = {proteinPercent} 
                        SET product.carbohydratePercent = {carbohydratePercent} 
+                       SET product.emission = {emission}
                        ';
 
             $client->run($query, $parameters);
@@ -257,6 +263,14 @@ class ProductController extends AbstractController
     {
 
         $categories = $entityManager->getRepository('App:Category')->findAll();
+
+        $boughtByUser = false;
+        $previousRatingByUser = null;
+        $previousRatingsForProduct = null;
+        $sumRating = 0;
+        $averageRating = null;
+        $userRating = null;
+
         if($this->isGranted('ROLE_CUSTOMER'))
         {
 
@@ -278,7 +292,6 @@ class ProductController extends AbstractController
                 $product->addViewedBy($view);
                 $user->addProductsViewed($view);
                 $entityManager->persist($view);
-                $entityManager->persist($product);
             }
             $entityManager->flush();
 
@@ -291,11 +304,42 @@ class ProductController extends AbstractController
                       ';
 
             $client->run($query, $parameters);
+
+
+
+            foreach ($user->getOrders() as $userOrder){
+                foreach($userOrder->getProducts() as $boughtProduct){
+                    if($product === $boughtProduct){
+                        $boughtByUser = true;
+                        break;
+                    }
+                }
+            }
+
+            $previousRatingByUser = $entityManager->getRepository('App:UserProductRating')->findOneBy(['user' => $user, 'product' => $product]);
+            $previousRatingsForProduct = $entityManager->getRepository('App:UserProductRating')->findBy(['product' => $product]);
+
+            foreach($previousRatingsForProduct as $productRating){
+                $sumRating += $productRating->getRating();
+            }
+
+            if(count($previousRatingsForProduct)){
+                $averageRating = $sumRating/count($previousRatingsForProduct);
+            }
+
+            if($previousRatingByUser){
+                $userRating = $previousRatingByUser->getRating();
+            }
+
+
         }
         return $this->render(
             'product/details.html.twig', [
             'product' => $product,
-            'categories' => $categories
+            'categories' => $categories,
+            'bought' => $boughtByUser,
+            'userRating' => $userRating,
+            'averageRating' => $averageRating
         ]);
     }
 
@@ -328,4 +372,61 @@ class ProductController extends AbstractController
 
         return $this->redirectToRoute('homepage');
     }
+
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param ClientInterface $client
+     * @return JsonResponse
+     * @Route ("/product/rate", name="product_rate")
+     */
+    public function rateProduct(Request $request, EntityManagerInterface $entityManager, ClientInterface $client)
+    {
+        $this->denyAccessUnlessGranted('ROLE_CUSTOMER');
+
+        $productID = $request->request->get('productID');
+        $rating = $request->request->get('rating');
+
+        $product = $entityManager->getRepository('App:Product')->find($productID);
+
+        if($product && $rating){
+
+            /** @var User $user */
+            $user = $this->getUser();
+
+            $previousRating = $entityManager->getRepository('App:UserProductRating')->findOneBy(['user' => $user, 'product' => $product]);
+
+            if($previousRating)
+            {
+                $previousRating->setRating($rating);
+                $entityManager->persist($previousRating);
+            }
+            else
+            {
+                $userRating = new UserProductRating();
+                $product->addRatedBy($userRating);
+                $userRating->setRating($rating);
+                $user->addProductsRated($userRating);
+                $entityManager->persist($userRating);
+            }
+            $entityManager->flush();
+
+            $parameters = ['userID' => $user->getId(), 'productID' => $product->getId(), 'rating' => $rating];
+
+            $query = 'MATCH (product:Product {productID: {productID}}) 
+                      MATCH (user:User {userID: {userID}}) 
+                      MERGE (user)-[rel:RATED]->(product) 
+                      SET rel.rating = {rating} 
+                      ';
+
+            $client->run($query, $parameters);
+
+            return new JsonResponse(['msg' => "Your rating was saved" ], 200);
+
+        }
+        return new JsonResponse(['msg' => 'There was an error.' ], 400);
+
+    }
+
+
 }

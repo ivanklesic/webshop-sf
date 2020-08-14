@@ -108,6 +108,9 @@
     "graphaware/neo4j-php-client": {
         "version": "4.8.5"
     },
+    "graphaware/reco4php": {
+        "version": "dev-master"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.5.5"
     },
@@ -116,6 +119,9 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.6.1"
+    },
+    "kartik-v/bootstrap-star-rating": {
+        "version": "4.0.x-dev"
     },
     "monolog/monolog": {
         "version": "1.25.3"

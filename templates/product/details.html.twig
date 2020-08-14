@@ -57,6 +57,16 @@
                     Greenhouse gas emission (in kg CO2-equivalent per kg of product): {{ product.gasEmission }}
                 </div>
                 <br>
+
+                {% if bought  %}
+                <div id="rateYo"></div>
+                    <br>
+                {% endif %}
+                <div>
+                    Average rating: {% if averageRating %} {{ averageRating }} {% else %} N/A {% endif %}
+                </div>
+                <br>
+
                 <div>
                     <a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">Back</a>
                 </div>
@@ -66,7 +76,6 @@
             <div id="ratioChart" style="width: 100%; height: 50%"></div>
         </div>
     </div>
-
 
 
 
@@ -119,11 +128,40 @@
                             success: function(data){
                                 $('#cart-size').html(data['size']);
                             }
-
                         });
                     }
 
                 })
+
+                let rateElement = $("#rateYo");
+
+                rateElement.rateYo({
+
+                    onSet: function (rating, rateYoInstance) {
+
+                        $.ajax({
+                            url: "{{ path('product_rate') }}",
+                            method: 'POST',
+                            data: {
+                                productID: $('#addToCart').attr('data-id'),
+                                rating: rating
+                            },
+                        });
+                    }
+                });
+
+
+                rateElement.rateYo({
+                    starWidth: "40px"
+                });
+
+                rateElement.rateYo("option", "maxValue", 10);
+                rateElement.rateYo("option", "fullStar", true);
+                rateElement.rateYo("option", "numStars", 10);
+
+                {% if userRating %}
+                    rateElement.rateYo("option", "rating", {{ userRating }});
+                {% endif %}
             });
 
         </script>
