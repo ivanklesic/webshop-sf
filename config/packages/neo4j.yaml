@@ -3,7 +3,7 @@ neo4j:
         enabled: true
     connections:
         default:
-            scheme: bolt # default (must be either "http" or "bolt")
+            scheme: http # default (must be either "http" or "bolt")
             host: localhost # default
             port: # optional, will be set to the proper driver's default port if not provided
             username: neo4j # default

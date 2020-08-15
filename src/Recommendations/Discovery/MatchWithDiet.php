@@ -8,14 +8,14 @@ use GraphAware\Common\Type\Node;
 use GraphAware\Reco4PHP\Context\Context;
 use GraphAware\Reco4PHP\Engine\SingleDiscoveryEngine;
 
-class BoughtByOthers extends SingleDiscoveryEngine
+class MatchWithDiet extends SingleDiscoveryEngine
 {
     public function discoveryQuery(Node $input, Context $context) : StatementInterface
     {
         $query = 'MATCH (input:User) WHERE id(input) = {id}
-        MATCH (input)-[:BOUGHT]->(m)<-[:BOUGHT]-(o)
-        WITH distinct o
-        MATCH (o)-[:BOUGHT]->(reco)
+        MATCH (input)-[:IS_USING]->(diet)
+        WITH diet
+        MATCH (reco:Product) WHERE reco.proteinPercent = diet.proteinPercent AND reco.carbohydratePercent = diet.carbohydratePercent AND reco.lipidPercent = diet.lipidPercent        
         RETURN distinct reco LIMIT 100';
 
         return Statement::create($query, ['id' => $input->identity()]);
@@ -24,7 +24,7 @@ class BoughtByOthers extends SingleDiscoveryEngine
 
     public function name() : string
     {
-        return "bought_by_others";
+        return "match_with_diet";
     }
 
 }

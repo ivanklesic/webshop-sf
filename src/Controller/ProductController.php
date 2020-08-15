@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\UserProductRating;
 use App\Entity\UserProductView;
+use App\Recommendations\RecommendationService;
 use DateTime;
 use GraphAware\Neo4j\Client\ClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -425,6 +426,31 @@ class ProductController extends AbstractController
 
         }
         return new JsonResponse(['msg' => 'There was an error.' ], 400);
+
+    }
+
+    /**
+     * @return Response
+     * @Route ("/product/reco", name="product_reco")
+     */
+    public function recommendProducts()
+    {
+
+        $this->denyAccessUnlessGranted('ROLE_CUSTOMER');
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $recommender = new RecommendationService("http://neo4j:supersecret@localhost:7474");
+
+        $recommendations = $recommender->recommendMovieForUserWithId($user->getId());
+
+        dd($recommendations);
+
+        return $this->render(
+            'product/reco.html.twig', [
+            'recommendations' => $recommendations
+        ]);
 
     }
 

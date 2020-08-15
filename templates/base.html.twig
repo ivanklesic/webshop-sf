@@ -52,7 +52,10 @@
                             <a class="nav-link" href="{{ path('cart_list') }}">Shopping cart (<span id="cart-size">{{ app.session.get('cart')|length }}</span>)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('homepage') }}">Browse products</a>
+                            <a class="nav-link" href="{{ path('homepage') }}">Browse products on sale</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('product_reco') }}">Recommended products</a>
                         </li>
                     {% elseif is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
