@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% if 'ROLE_CUSTOMER' in app.user.roles %}
+        <h1 align="center">Based on Your activity and profile, we recommend these products:</h1>
+        <div class="container">
+
+            <br>
+
+            <div class="row">
+
+                <div class="col-lg-1">
+
+                </div>
+
+
+
+
+                <div class="col-lg-10">
+                    <div class="row"><br>
+                        {% for product in recommendations %}
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <a href="{{ path('product_details', {id:product.id}) }}"><img class="card-img-top" src="{{ asset('/uploads/images/' ~ product.image)|imagine_filter('fixed_filter_small') }}" alt=""></a>
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            <a href="{{ path('product_details', {id:product.id}) }}">{{ product.name }}</a>
+                                        </h4>
+                                        <h5>€{{ product.price }}</h5>Stock: {{ product.quantity }}
+                                        <p class="card-text">{{ product.description|length > 50 ? product.description|slice(0, 50) ~ '...' : product.description  }}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <small class="text-muted"></small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-1">
+
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}

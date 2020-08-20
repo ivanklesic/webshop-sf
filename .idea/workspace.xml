@@ -2,15 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4291a367-a2c7-41d3-af38-22ae9de9fb31" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardWellRated.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Recommendations/RecommendationEngine.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Recommendations/RecommendationService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/product/reco.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/webshop-sf.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webshop-sf.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/neo4j.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/neo4j.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CartController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CartController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/ProductController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ProductController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Recommendations/Discovery/BoughtByOthers.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Recommendations/Discovery/BoughtByOthers.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ProductType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ProductType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Recommendations/Discovery/MatchWithDiet.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Recommendations/Discovery/MatchWithDiet.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardViewed.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardViewed.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardWellRated.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardWellRated.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cart/cart.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cart/cart.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/product/details.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product/details.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/product/list.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product/list.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/product/reco.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product/reco.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,6 +166,10 @@
       <path value="$PROJECT_DIR$/vendor/ocramius/package-versions" />
       <path value="$PROJECT_DIR$/vendor/graphaware/reco4php" />
       <path value="$PROJECT_DIR$/vendor/kartik-v/bootstrap-star-rating" />
+      <path value="$PROJECT_DIR$/vendor/intervention/image" />
+      <path value="$PROJECT_DIR$/vendor/imagine/imagine" />
+      <path value="$PROJECT_DIR$/vendor/symfony/templating" />
+      <path value="$PROJECT_DIR$/vendor/liip/imagine-bundle" />
     </include_path>
   </component>
   <component name="ProjectId" id="1blnjBxN6U1YeWbeuSJaofzX5Ev" />
@@ -171,16 +185,16 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\xampp\htdocs\webshop-sf\src\Recommendations\Filter" />
+      <recent name="E:\xampp\htdocs\webshop-sf\src\Validator\Constraints" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\xampp\htdocs\webshop-sf\src\Recommendations" />
       <recent name="E:\xampp\htdocs\webshop-sf\src\Recommendations\PostProcessing" />
       <recent name="E:\xampp\htdocs\webshop-sf\src\Recommendations\Discovery" />
       <recent name="E:\xampp\htdocs\webshop-sf\src\Recommendations\Filter" />
       <recent name="E:\xampp\htdocs\webshop-sf\templates\diet" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\xampp\htdocs\webshop-sf\src\Recommendations\Filter" />
-      <recent name="E:\xampp\htdocs\webshop-sf\src\Validator\Constraints" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -243,6 +257,13 @@
       <workItem from="1597327876523" duration="12417000" />
       <workItem from="1597397530403" duration="25039000" />
       <workItem from="1597479160136" duration="26552000" />
+      <workItem from="1597598785819" duration="893000" />
+      <workItem from="1597617623630" duration="201000" />
+      <workItem from="1597660978804" duration="1431000" />
+      <workItem from="1597673093046" duration="10590000" />
+      <workItem from="1597741345181" duration="20481000" />
+      <workItem from="1597845001723" duration="10158000" />
+      <workItem from="1597931419353" duration="13735000" />
     </task>
     <servers />
   </component>
@@ -288,11 +309,11 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1512" y="436" key="Vcs.Push.Dialog.v2/0.0.2560.1400@0.0.2560.1400" timestamp="1589654715489" />
-    <state x="1627" y="445" width="585" height="550" key="find.popup" timestamp="1597505121934">
+    <state x="1627" y="445" width="585" height="550" key="find.popup" timestamp="1597742293777">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>
     <state x="1627" y="433" width="585" height="534" key="find.popup/0.0.2560.1400@0.0.2560.1400" timestamp="1591628152806" />
-    <state x="1627" y="445" width="585" height="550" key="find.popup/0.0.2560.1440@0.0.2560.1440" timestamp="1597505121934" />
+    <state x="1627" y="445" width="585" height="550" key="find.popup/0.0.2560.1440@0.0.2560.1440" timestamp="1597742293777" />
     <state x="1576" y="332" key="run.anything.popup" timestamp="1596382830342">
       <screen x="0" y="0" width="2560" height="1440" />
     </state>

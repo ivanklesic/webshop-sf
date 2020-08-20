@@ -120,8 +120,27 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
+    "imagine/imagine": {
+        "version": "1.2.3"
+    },
+    "intervention/image": {
+        "version": "2.5.1"
+    },
     "kartik-v/bootstrap-star-rating": {
         "version": "4.0.x-dev"
+    },
+    "liip/imagine-bundle": {
+        "version": "1.8",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.8",
+            "ref": "5a5bdc2d0e2533ed6935d5ae562f2b318a8fc1ee"
+        },
+        "files": [
+            "./config/packages/liip_imagine.yaml",
+            "./config/routes/liip_imagine.yaml"
+        ]
     },
     "monolog/monolog": {
         "version": "1.25.3"
@@ -501,6 +520,9 @@
     },
     "symfony/stopwatch": {
         "version": "v4.4.8"
+    },
+    "symfony/templating": {
+        "version": "v4.4.11"
     },
     "symfony/test-pack": {
         "version": "v1.0.6"

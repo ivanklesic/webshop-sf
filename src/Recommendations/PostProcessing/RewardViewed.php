@@ -17,7 +17,7 @@ class RewardViewed extends RecommendationSetPostProcessor
         $query = 'UNWIND {ids} as id
         MATCH (n) WHERE id(n) = id
         MATCH (input:User) WHERE id(input) = {id}        
-        RETURN EXISTS ((input)-[:VIEWED]->(n)) as has_viewed';
+        RETURN id(n) as id, EXISTS ((input)-[:VIEWED]->(n)) as has_viewed';
 
         $ids = [];
         foreach ($recommendations->getItems() as $item) {
@@ -39,7 +39,7 @@ class RewardViewed extends RecommendationSetPostProcessor
 
     public function name()
     {
-        return "reward_well_rated";
+        return "reward_viewed";
     }
 
 }

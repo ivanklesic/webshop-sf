@@ -5,6 +5,8 @@
 
     <div class="row">
         <div class="col-lg-1">
+        </div>
+        <div class="col-lg-1">
             <br>
             <div class="list-group">
                 {% for category in categories %}
@@ -13,22 +15,16 @@
             </div>
         </div>
 
-        <div class="col-lg-8">
+        <div class="col-lg-4">
 
 
             <div class="slide my-4">
                 <div class="container">
-                  <img class="d-block img-fluid" src="{{ asset('/uploads/images/' ~ product.image) }}" alt="Image not found">
+                  <img class="d-block img-fluid" src="{{ asset('/uploads/images/' ~ product.image)|imagine_filter('fixed_filter_big') }}" alt="Image not found">
                 </div>
             </div>
 
                 <h1>{{ product.name }}</h1>
-                <div style="float: right">
-                    <label for="quantity">Quantity (max. {{ product.quantity }}):</label>
-                    <input type="number" id="quantity" step="1" name="quantity" min="1" max="{{ product.quantity }}">
-                    <a  id="addToCart" data-id="{{ product.id }}"
-                        href="#" class="btn btn-primary">Add to shopping cart</a>
-                </div>
 
                 <div>
                     Description: {{ product.description }}
@@ -46,13 +42,24 @@
                     Category: <a href="{{ path('category', {id:product.category.id}) }}">{{ product.category.name }}</a>
                 </div>
                 <br>
-                <div>
-                    Avoid if you have the following conditions:
-                    {% for condition in product.conditions %}
-                        {{ condition.name }}{% if not loop.last %}, {% endif %}
-                    {% endfor %}
-                </div>
-                <br>
+                {% if product.conditions %}
+                    <div>
+                        Avoid if you have the following conditions:
+                        {% for condition in product.conditions %}
+                            {{ condition.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
+                    <br>
+                {% endif %}
+                {% if product.diets %}
+                    <div>
+                        Avoid if you are using any of the following diets:
+                        {% for diet in product.diets %}
+                            {{ diet.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </div>
+                    <br>
+                {% endif %}
                 <div>
                     Greenhouse gas emission (in kg CO2-equivalent per kg of product): {{ product.gasEmission }}
                 </div>
@@ -72,8 +79,17 @@
                 </div>
 
         </div>
-        <div class="col-lg-3">
-            <div id="ratioChart" style="width: 100%; height: 50%"></div>
+        <div class="col-lg-4">
+            <div id="ratioChart" style="width: 50%; height: 50%"></div>
+            <br>
+            <div>
+                <label for="quantity">Quantity (max. {{ product.quantity }}):</label>
+                <input type="number" id="quantity" step="1" name="quantity" min="1" max="{{ product.quantity }}">
+                <a  id="addToCart" data-id="{{ product.id }}"
+                    href="#" class="btn btn-primary">Add to shopping cart</a>
+            </div>
+        </div>
+        <div class="col-lg-1">
         </div>
     </div>
 

@@ -158,10 +158,11 @@ class ProductController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Product $product
      * @param ClientInterface $client
+     * @param FileUploader $fileUploader
      * @return Response
      * @Route ("/product/edit/{id}", name="product_edit")
      */
-    public function editAction(Request $request, EntityManagerInterface $entityManager, Product $product, ClientInterface $client)
+    public function editAction(Request $request, EntityManagerInterface $entityManager, Product $product, ClientInterface $client, FileUploader $fileUploader)
     {
         $this->denyAccessUnlessGranted('edit', $product);
 
@@ -175,6 +176,17 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $product->setCreatedAt(new DateTime());
+
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form['image']->getData();
+            if ($imageFile) {
+                if($product->getImage()){
+                    unlink('uploads/images/' . $product->getImage());
+                }
+                $imageFileName = $fileUploader->upload($imageFile);
+                $product->setImage($imageFileName);
+            }
+
             $entityManager->persist($product);
             $entityManager->flush();
 
@@ -358,6 +370,9 @@ class ProductController extends AbstractController
 
         $parameters = ['productID' => $product->getId()];
 
+        if($product->getImage()){
+            unlink('uploads/images/' . $product->getImage());
+        }
         $entityManager->remove($product);
         $entityManager->flush();
 
@@ -430,10 +445,11 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @param EntityManagerInterface $entityManager
      * @return Response
      * @Route ("/product/reco", name="product_reco")
      */
-    public function recommendProducts()
+    public function recommendProducts(EntityManagerInterface $entityManager)
     {
 
         $this->denyAccessUnlessGranted('ROLE_CUSTOMER');
@@ -445,11 +461,15 @@ class ProductController extends AbstractController
 
         $recommendations = $recommender->recommendMovieForUserWithId($user->getId());
 
-        dd($recommendations);
+        $recommendedProducts = array();
+
+        foreach($recommendations->getItems(30) as $recommendation){
+            $recommendedProducts[] = $entityManager->getRepository('App:Product')->find($recommendation->item()->get('productID'));
+        }
 
         return $this->render(
             'product/reco.html.twig', [
-            'recommendations' => $recommendations
+            'recommendations' => $recommendedProducts
         ]);
 
     }

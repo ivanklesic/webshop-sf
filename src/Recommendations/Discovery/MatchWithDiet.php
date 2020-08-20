@@ -15,7 +15,7 @@ class MatchWithDiet extends SingleDiscoveryEngine
         $query = 'MATCH (input:User) WHERE id(input) = {id}
         MATCH (input)-[:IS_USING]->(diet)
         WITH diet
-        MATCH (reco:Product) WHERE reco.proteinPercent = diet.proteinPercent AND reco.carbohydratePercent = diet.carbohydratePercent AND reco.lipidPercent = diet.lipidPercent        
+        MATCH (diet)<-[:IS_USING]-(user)-[:BOUGHT]->(reco)              
         RETURN distinct reco LIMIT 100';
 
         return Statement::create($query, ['id' => $input->identity()]);

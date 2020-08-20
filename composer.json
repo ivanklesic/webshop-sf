@@ -7,8 +7,9 @@
         "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
-        "doctrine/doctrine-fixtures-bundle": "^3.3",
+        "doctrine/doctrine-fixtures-bundle": "^3.3",+
         "kartik-v/bootstrap-star-rating": "@dev",
+        "liip/imagine-bundle": "^2.3",
         "neo4j/neo4j-bundle": "^0.4.2",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/apache-pack": "^1.0",

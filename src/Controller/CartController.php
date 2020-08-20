@@ -36,12 +36,27 @@ class CartController extends AbstractController
 
         $product = $entityManager->getRepository('App:Product')->find($productID);
 
-        if($product && $quantity){
-            $conditionArray = array();
-            foreach ($product->getConditions() as $condition){
-                $conditionArray []= $condition->getId();
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        $conflict = false;
+
+        foreach($product->getConditions() as $condition){
+            if($currentUser->getConditions()->contains($condition)){
+                $conflict = true;
+                break;
             }
-            $itemArray = array('id' => $productID, 'name'=>$product->getName(), 'quantity'=>$quantity, 'price'=>$product->getPrice(), 'image'=>$product->getImage(), 'conditions'=>$conditionArray);
+        }
+
+        foreach($product->getDiets() as $diet){
+            if($currentUser->getActiveDiet() === $diet){
+                $conflict = true;
+                break;
+            }
+        }
+
+        if($product && $quantity){
+            $itemArray = array('id' => $productID, 'name'=>$product->getName(), 'description'=>$product->getDescription(), 'quantity'=>$quantity, 'price'=>$product->getPrice(), 'image'=>$product->getImage(),  'conflict'=>$conflict);
 
             $cartArray = $session->get('cart', null);
 
@@ -68,6 +83,8 @@ class CartController extends AbstractController
                 $cartArray[] = $itemArray;
             }
             $session->set('cart', $cartArray);
+
+
 
             return new JsonResponse(['msg' => "Added product to cart", 'size' => count($cartArray) ], 200);
 
@@ -153,15 +170,26 @@ class CartController extends AbstractController
 
         $cartArray = $session->get('cart', null);
 
-        $cartSize = array();
+
+        $cartSize = null;
+
         if($cartArray){
+            foreach($cartArray as $item){
+                if($item['conflict']){
+                    $this->addFlash(
+                        'warning',
+                        'Your cart contains product(s) that conflict with Your diet and/or medical condition profile. Please review products in the cart before proceeding to checkout.'
+                    );
+                    break;
+                }
+            }
             $cartSize = count($cartArray);
         }
 
         return $this->render(
             'cart/cart.html.twig', [
                 'cart' => $cartArray,
-            'cartSize' => $cartSize
+                'cartSize' => $cartSize
             ]);
 
     }

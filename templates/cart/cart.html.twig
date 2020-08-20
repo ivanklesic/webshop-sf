@@ -16,6 +16,7 @@
             <tbody>
             <tr>
                 <th style="text-align:center;">Name</th>
+                <th style="text-align:center;">Description</th>
                 <th style="text-align:center;">Image</th>
                 <th style="text-align:right;" width="5%">Quantity</th>
                 <th style="text-align:right;" width="5%">Unit Price</th>
@@ -25,9 +26,10 @@
             {% for item in cart %}
                 {% set item_price = item["quantity"] * item["price"] %}
 
-                <tr>
-                    <td style="width: 5%; height: 5%;text-align:center;" >{{item["name"]}}</td>
-                    <td style="width: 5%; height: 5%;text-align:center;"><img class="d-block img-fluid" src="{{ asset('/uploads/images/' ~ item['image']) }}" alt="Image not found"></td>
+                <tr style="{% if item['conflict'] %}color:red;{% endif %}">
+                    <td style="width: 5%; height: 5%;text-align:center;" ><a href="{{ path('product_details', {id:item["id"]}) }}">{{item["name"]}}</a></td>
+                    <td style="width: 5%; height: 5%;text-align:center;" >{{item["description"]}}</td>
+                    <td style="width: 5%; height: 5%;text-align:center;"><img class="d-block img-fluid" src="{{ asset('/uploads/images/' ~ item['image'])|imagine_filter('fixed_filter_thumb') }}" alt="Image not found"></td>
                     <td style="text-align:right;">{{item["quantity"]}}</td>
                     <td  style="text-align:right;">€ {{ item["price"] }}</td>
                     <td  style="text-align:right;">€ {{ item_price|number_format(2, '.', ',')}}</td>

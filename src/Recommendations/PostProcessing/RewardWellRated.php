@@ -17,7 +17,8 @@ class RewardWellRated extends RecommendationSetPostProcessor
         $query = 'UNWIND {ids} as id
         MATCH (n) WHERE id(n) = id
         MATCH (n)<-[r:RATED]-(u)
-        RETURN id(n) as id, avg(r.rating) as score';
+        WITH n, count(r) as num_ratings, reduce(total=0, number in r.rating | total + number) as full_rating
+        RETURN id(n) as id, toFloat(full_rating) / num_ratings as score';
 
         $ids = [];
         foreach ($recommendations->getItems() as $item) {

@@ -37,7 +37,7 @@ class ProductType extends AbstractType
                 'label' => 'Description'
             ])
             ->add('quantity', IntegerType::class, [
-                'label' => 'Quantity'
+                'label' => 'Quantity (stock)'
             ])
             ->add('price', NumberType::class, [
                 'scale' => 2,
@@ -84,7 +84,7 @@ class ProductType extends AbstractType
                 'label' => 'If your product contains any of the ingredients below, please check them',
                 'expanded' => true,
                 'choice_label' => function ($condition) {
-                    return $condition->getDescription();
+                    return ($condition->getDescription());
                 }
             ))
             ->add('diets', EntityType::class, array(
@@ -94,7 +94,7 @@ class ProductType extends AbstractType
                 'label' => 'If your product contains any of the ingredients below, please check them',
                 'expanded' => true,
                 'choice_label' => function ($diet) {
-                    return $diet->getDescription();
+                    return ($diet->getDescription());
                 }
             ))
             ->add('gasEmission', IntegerType::class, [

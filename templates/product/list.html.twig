@@ -35,7 +35,8 @@
                     <th>Image</th>
                     <th>Category</th>
                     <th>Macronutrient ratio (protein:carbohydrate:lipid)</th>
-                    <th>Ingredients that can cause complications</th>
+                    <th>Excluded from diets</th>
+                    <th>Can cause complications with</th>
                     <th>Greenhouse gas emission (CO2-e)</th>
                     <th>Actions</th>
                 </tr>
@@ -59,7 +60,7 @@
                         </td>
 
                         <td>
-                            <img class="d-block img-fluid" src="{{ asset('/uploads/images/' ~ product.image) }}" alt="Image not found">
+                            <img class="d-block img-fluid" src="{{ asset('uploads/images/' ~ product.image)|imagine_filter('fixed_filter_thumb') }}" alt="Image not found">
                         </td>
 
                         <td>
@@ -69,10 +70,15 @@
                         <td>
                             {{ product.proteinPercent }}:{{ product.carbohydratePercent }}:{{ product.lipidPercent }}
                         </td>
+                        <td>
+                            {% for diet in product.diets %}
+                                {{ diet.name }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
 
                         <td>
                             {% for condition in product.conditions %}
-                                {{ condition.description }}{% if not loop.last %}, {% endif %}
+                                {{ condition.name }}{% if not loop.last %}, {% endif %}
                             {% endfor %}
                         </td>
                         <td>
