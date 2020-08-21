@@ -1,27 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4291a367-a2c7-41d3-af38-22ae9de9fb31" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webshop-sf.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webshop-sf.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/CartController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CartController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ProductController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ProductController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/ProductType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/ProductType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Recommendations/Discovery/MatchWithDiet.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Recommendations/Discovery/MatchWithDiet.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardViewed.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardViewed.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardWellRated.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Recommendations/PostProcessing/RewardWellRated.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/cart/cart.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cart/cart.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/product/details.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product/details.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/product/list.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product/list.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/product/reco.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product/reco.html.twig" afterDir="false" />
-    </list>
+    <list default="true" id="4291a367-a2c7-41d3-af38-22ae9de9fb31" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -263,7 +243,7 @@
       <workItem from="1597673093046" duration="10590000" />
       <workItem from="1597741345181" duration="20481000" />
       <workItem from="1597845001723" duration="10158000" />
-      <workItem from="1597931419353" duration="13735000" />
+      <workItem from="1597931419353" duration="13827000" />
     </task>
     <servers />
   </component>
