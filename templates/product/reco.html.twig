@@ -5,18 +5,9 @@
     {% if 'ROLE_CUSTOMER' in app.user.roles %}
         <h1 align="center">Based on Your activity and profile, we recommend these products:</h1>
         <div class="container">
-
             <br>
-
             <div class="row">
-
-                <div class="col-lg-1">
-
-                </div>
-
-
-
-
+                <div class="col-lg-1"></div>
                 <div class="col-lg-10">
                     <div class="row"><br>
                         {% for product in recommendations %}
@@ -38,9 +29,7 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="col-lg-1">
-
-                </div>
+                <div class="col-lg-1"></div>
             </div>
         </div>
 

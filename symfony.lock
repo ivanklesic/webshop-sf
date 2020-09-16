@@ -1,4 +1,7 @@
 {
+    "cboden/ratchet": {
+        "version": "v0.4.3"
+    },
     "clue/stream-filter": {
         "version": "v1.4.1"
     },
@@ -99,6 +102,9 @@
     "egulias/email-validator": {
         "version": "2.1.17"
     },
+    "evenement/evenement": {
+        "version": "v3.0.1"
+    },
     "graphaware/neo4j-bolt": {
         "version": "1.11.0"
     },
@@ -122,9 +128,6 @@
     },
     "imagine/imagine": {
         "version": "1.2.3"
-    },
-    "intervention/image": {
-        "version": "2.5.1"
     },
     "kartik-v/bootstrap-star-rating": {
         "version": "4.0.x-dev"
@@ -219,6 +222,30 @@
     },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
+    },
+    "ratchet/rfc6455": {
+        "version": "v0.3"
+    },
+    "react/cache": {
+        "version": "v1.0.0"
+    },
+    "react/dns": {
+        "version": "v1.3.0"
+    },
+    "react/event-loop": {
+        "version": "v1.1.1"
+    },
+    "react/promise": {
+        "version": "v2.8.0"
+    },
+    "react/promise-timer": {
+        "version": "v1.6.0"
+    },
+    "react/socket": {
+        "version": "v1.5.0"
+    },
+    "react/stream": {
+        "version": "v1.1.1"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -498,15 +525,6 @@
         ]
     },
     "symfony/security-core": {
-        "version": "v4.4.8"
-    },
-    "symfony/security-csrf": {
-        "version": "v4.4.8"
-    },
-    "symfony/security-guard": {
-        "version": "v4.4.8"
-    },
-    "symfony/security-http": {
         "version": "v4.4.8"
     },
     "symfony/serializer": {

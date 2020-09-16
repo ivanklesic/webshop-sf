@@ -27,6 +27,9 @@
                             {% if is_granted('ROLE_ADMIN') %}
                                 <a href="{{ path('user_delete', {id:user.id})  }}" onclick="return confirm('Are you sure you want to delete {{ user.username }}?')"> Delete</a>
                             {% endif %}
+                            {% if is_granted('ROLE_USER') and user != app.user %}
+                                <a href="{{ path('chat_user', {id:user.id})  }}" > Chat</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

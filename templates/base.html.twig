@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+    <link rel="stylesheet" href="{{ asset('style.css') }}">
+
 
 
     <script
@@ -29,7 +31,7 @@
 
 </head>
 
-<body style="margin-bottom:80px;">
+<body style="margin-bottom:80px; background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +98,7 @@
     {% endif %}
 </nav>
 
-{% for label, messages in app.flashes(['success', 'warning']) %}
+{% for label, messages in app.flashes(['success', 'warning', 'error']) %}
     {% for message in messages %}
         <div class="alert alert-{{ label }}">
             {{ message }}

@@ -13,7 +13,7 @@ class BoughtByOthers extends SingleDiscoveryEngine
     public function discoveryQuery(Node $input, Context $context) : StatementInterface
     {
         $query = 'MATCH (input:User) WHERE id(input) = {id}
-        MATCH (input)-[:BOUGHT]->(m)<-[:BOUGHT]-(o)
+        MATCH (input)-[:BOUGHT]->(product)<-[:BOUGHT]-(o)
         WITH distinct o
         MATCH (o)-[:BOUGHT]->(reco)
         RETURN distinct reco LIMIT 100';
