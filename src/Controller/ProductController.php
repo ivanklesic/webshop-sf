@@ -459,7 +459,7 @@ class ProductController extends AbstractController
 
         $recommender = new RecommendationService("http://neo4j:supersecret@localhost:7474");
 
-        $recommendations = $recommender->recommendMovieForUserWithId($user->getId());
+        $recommendations = $recommender->recommendProductForUserWithId($user->getId());
 
         $recommendedProducts = array();
 

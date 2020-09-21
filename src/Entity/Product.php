@@ -148,11 +148,6 @@ class Product
     private $createdAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Order::class, mappedBy="products")
-     */
-    private $orders;
-
-    /**
      * @ORM\ManyToMany(targetEntity=Diet::class, inversedBy="products")
      */
     private $diets;
@@ -401,34 +396,6 @@ class Product
     public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Order[]
-     */
-    public function getOrders(): Collection
-    {
-        return $this->orders;
-    }
-
-    public function addOrder(Order $order): self
-    {
-        if (!$this->orders->contains($order)) {
-            $this->orders[] = $order;
-            $order->addProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrder(Order $order): self
-    {
-        if ($this->orders->contains($order)) {
-            $this->orders->removeElement($order);
-            $order->removeProduct($this);
-        }
 
         return $this;
     }

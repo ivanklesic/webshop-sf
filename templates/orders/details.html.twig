@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Order {{ order.id }}
+{% endblock %}
+{% block body %}
+    <div class="container-fluid" style="padding: 1% 10%">
+        <div class="d-flex justify-content-between">
+            <h1>
+                Order {{ order.id }}
+            </h1>
+        </div>
+
+        <table class="table" id="product-table" style="empty-cells: hide">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in products %}
+                <tr valign="middle">
+                    <td>
+                        {{ product['name'] }}
+                    </td>
+                    <td>
+                        € {{ product['price'] }}
+                    </td>
+
+                    <td>
+                        {{ product['quantity'] }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        $(document).ready(function () {
+            $('#product-table').DataTable( {
+            });
+
+        });
+
+    </script>
+{% endblock %}

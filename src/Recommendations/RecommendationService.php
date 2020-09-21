@@ -27,7 +27,7 @@ class RecommendationService
      * @param int $id
      * @return Recommendations
      */
-    public function recommendMovieForUserWithId($id)
+    public function recommendProductForUserWithId($id)
     {
 
         $input = $this->service->findInputBy('User', 'userID', $id);

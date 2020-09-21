@@ -32,14 +32,21 @@ class Order
      */
     private $user;
 
+    
     /**
-     * @ORM\ManyToMany(targetEntity=Product::class, inversedBy="orders")
+     * @ORM\Column(type="array")
      */
     private $products;
 
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $price;
+
+
     public function __construct()
     {
-        $this->products = new ArrayCollection();
+        $this->products = [];
     }
 
     public function getId(): ?int
@@ -71,29 +78,29 @@ class Order
         return $this;
     }
 
-    /**
-     * @return Collection|Product[]
-     */
-    public function getProducts(): Collection
+    public function getProducts()
     {
         return $this->products;
     }
 
-    public function addProduct(Product $product): self
+    public function setProducts(array $products): self
     {
-        if (!$this->products->contains($product)) {
-            $this->products[] = $product;
-        }
+        $this->products = $products;
 
         return $this;
     }
 
-    public function removeProduct(Product $product): self
+    public function getPrice(): ?float
     {
-        if ($this->products->contains($product)) {
-            $this->products->removeElement($product);
-        }
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }
+
+
 }
